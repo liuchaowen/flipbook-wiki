@@ -347,7 +347,6 @@ export default function CanvasViewer({
                                     fontWeight: 500,
                                 }}
                             >
-                                AI 正在生成...
                             </p>
                         </div>
                     </motion.div>

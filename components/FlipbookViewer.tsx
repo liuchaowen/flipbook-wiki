@@ -200,7 +200,7 @@ export default function FlipbookViewer() {
                             letterSpacing: '-0.018em',
                         }}
                     >
-                        Flipbook
+                        Flipbook.wiki
                     </h1>
                 </div>
 
