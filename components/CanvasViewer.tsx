@@ -112,8 +112,8 @@ export default function CanvasViewer({
         });
 
         if (hoveredReg !== hoveredRegion) {
-            setHoveredRegion(hoveredReg);
-            onRegionHover(hoveredReg);
+            setHoveredRegion(hoveredReg ?? null);
+            onRegionHover(hoveredReg ?? null);
         }
     }, [isDragging, dragStart, regions, hoveredRegion, onRegionHover]);
 

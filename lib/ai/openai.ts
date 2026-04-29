@@ -58,8 +58,8 @@ export async function generateImage(prompt: string): Promise<{
       quality: 'standard',
     });
 
-    const imageUrl = response.data[0]?.url;
-    const revisedPrompt = response.data[0]?.revised_prompt;
+    const imageUrl = response.data?.[0]?.url;
+    const revisedPrompt = response.data?.[0]?.revised_prompt;
 
     if (!imageUrl) {
       throw new Error('No image URL returned from OpenAI');
@@ -108,7 +108,7 @@ export async function generateExpandedImage(
       quality: 'standard',
     });
 
-    const imageUrl = response.data[0]?.url;
+    const imageUrl = response.data?.[0]?.url;
 
     if (!imageUrl) {
       throw new Error('No image URL returned from OpenAI');
