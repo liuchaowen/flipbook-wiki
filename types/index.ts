@@ -32,7 +32,6 @@ export interface ClickPosition {
 // 生成请求
 export interface GenerateRequest {
   prompt: string;
-  style?: 'infographic' | 'illustration' | 'realistic' | 'artistic';
   width?: number;
   height?: number;
 }

@@ -6,38 +6,19 @@ const getOpenAIClient = () => {
   if (!apiKey) {
     throw new Error('OPENAI_API_KEY is not set in environment variables');
   }
-  return new OpenAI({ apiKey });
+  const baseURL = process.env.OPENAI_BASE_URL;
+  return new OpenAI({ apiKey, baseURL });
 };
 
-// 风格修饰词
-const STYLE_MODIFIERS: Record<string, string> = {
-  infographic: 'infographic style, clean layout, icons and illustrations, educational, visually organized, labeled sections, modern design',
-  illustration: 'digital illustration, artistic, vibrant colors, detailed, creative style',
-  realistic: 'photorealistic, high detail, professional photography, natural lighting',
-  artistic: 'artistic style, painterly, expressive, creative interpretation, fine art quality',
-};
+// 等轴测插画风格修饰词 - 统一风格和色彩
+const ISOMETRIC_STYLE = 'isometric illustration style, 3D isometric view, isometric projection, dimensional feel, geometric shapes, clean modern design, soft pastel color palette with blue, teal, coral and warm orange accents, consistent lighting, infographic style, clean layout, icons and illustrations, educational, visual organization, labeled sections, vector art style, smooth gradients, professional infographic design';
 
-// 生成信息图 Prompt
-export function buildInfographicPrompt(userPrompt: string, style: string = 'infographic'): string {
-  const styleModifier = STYLE_MODIFIERS[style] || STYLE_MODIFIERS.infographic;
-  
-  return `Create a visually stunning infographic about: "${userPrompt}"
-
-Style: ${styleModifier}
-
-Requirements:
-- Create a cohesive visual composition with multiple related elements
-- Include clear visual hierarchy and organization
-- Add descriptive labels and annotations in Chinese
-- Make it informative and visually appealing
-- Each element should be distinct and clickable for further exploration
-- Use a harmonious color palette
-- Include visual elements that represent key aspects of the topic
-
-The image should be like an interactive visual guide where users can explore different sections.`;
+// 构建图像生成 Prompt（等轴测插画风格）
+export function buildInfographicPrompt(userPrompt: string): string {
+  return `${userPrompt}, ${ISOMETRIC_STYLE}`;
 }
 
-// 生成展开区域的 Prompt
+// 构建展开区域 Prompt（等轴测插画风格）
 export function buildExpandPrompt(
   regionName: string,
   regionDescription: string,
@@ -45,32 +26,18 @@ export function buildExpandPrompt(
   parentContext: string
 ): string {
   const expandTypeModifiers: Record<string, string> = {
-    detail: 'detailed close-up view, zoomed in, intricate details',
-    panorama: 'wide panoramic view, expansive scene, full context',
-    interior: 'interior view, inside look, cross-section',
-    overview: 'overview perspective, bird\'s eye view, comprehensive',
+    detail: 'detailed close-up view, zoomed in details',
+    panorama: 'panoramic view, wide scene',
+    interior: 'interior view, cross-section',
+    overview: 'overview perspective, bird\'s eye view',
   };
 
   const modifier = expandTypeModifiers[expandType] || expandTypeModifiers.detail;
-
-  return `Create a ${modifier} visualization of: "${regionName}"
-
-Context: This is part of "${parentContext}"
-Description: ${regionDescription}
-
-Style: ${STYLE_MODIFIERS.infographic}
-
-Requirements:
-- Focus specifically on "${regionName}"
-- Provide detailed visual information about this element
-- Include relevant labels and annotations in Chinese
-- Make it visually cohesive with the parent context
-- Include sub-elements that can be further explored
-- Create an informative and beautiful visualization`;
+  return `${regionName}, ${modifier}, ${regionDescription}, part of "${parentContext}", ${ISOMETRIC_STYLE}`;
 }
 
-// 图像生成
-export async function generateImage(prompt: string, style: string = 'infographic'): Promise<{
+// 图像生成（使用 OpenAI DALL-E API）
+export async function generateImage(prompt: string): Promise<{
   success: boolean;
   imageUrl?: string;
   revisedPrompt?: string;
@@ -78,29 +45,87 @@ export async function generateImage(prompt: string, style: string = 'infographic
 }> {
   try {
     const openai = getOpenAIClient();
-    const enhancedPrompt = buildInfographicPrompt(prompt, style);
+    const enhancedPrompt = buildInfographicPrompt(prompt);
+
+    console.log('--- Generating image with OpenAI DALL-E ---');
+    console.log('Prompt:', enhancedPrompt);
 
     const response = await openai.images.generate({
-      model: 'dall-e-3',
+      model: 'gpt-image-1-all',
       prompt: enhancedPrompt,
       n: 1,
       size: '1024x1024',
       quality: 'standard',
-      response_format: 'url',
     });
 
-    const imageData = response.data[0];
-    
+    const imageUrl = response.data[0]?.url;
+    const revisedPrompt = response.data[0]?.revised_prompt;
+
+    if (!imageUrl) {
+      throw new Error('No image URL returned from OpenAI');
+    }
+
+    console.log('Image generated successfully!');
+    console.log('Image URL:', imageUrl);
+
     return {
       success: true,
-      imageUrl: imageData.url,
-      revisedPrompt: imageData.revised_prompt,
+      imageUrl,
+      revisedPrompt: revisedPrompt || enhancedPrompt,
     };
   } catch (error) {
     console.error('Image generation error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to generate image',
+    };
+  }
+}
+
+// 生成展开图像
+export async function generateExpandedImage(
+  regionName: string,
+  regionDescription: string,
+  expandType: string,
+  parentContext: string
+): Promise<{
+  success: boolean;
+  imageUrl?: string;
+  error?: string;
+}> {
+  try {
+    const openai = getOpenAIClient();
+    const prompt = buildExpandPrompt(regionName, regionDescription, expandType, parentContext);
+
+    console.log('--- Generating expanded image with OpenAI DALL-E ---');
+    console.log('Prompt:', prompt);
+
+    const response = await openai.images.generate({
+      model: 'z-image-turbo',
+      prompt,
+      n: 1,
+      size: '1024x1024',
+      quality: 'standard',
+    });
+
+    const imageUrl = response.data[0]?.url;
+
+    if (!imageUrl) {
+      throw new Error('No image URL returned from OpenAI');
+    }
+
+    console.log('Expanded image generated successfully!');
+    console.log('Image URL:', imageUrl);
+
+    return {
+      success: true,
+      imageUrl,
+    };
+  } catch (error) {
+    console.error('Expanded image generation error:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to generate expanded image',
     };
   }
 }
@@ -191,49 +216,6 @@ Please analyze what element or region was clicked and provide information about 
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to analyze region',
-    };
-  }
-}
-
-// 生成展开图像
-export async function generateExpandedImage(
-  regionName: string,
-  regionDescription: string,
-  expandType: string,
-  parentContext: string
-): Promise<{
-  success: boolean;
-  imageUrl?: string;
-  error?: string;
-}> {
-  try {
-    const openai = getOpenAIClient();
-    const prompt = buildExpandPrompt(regionName, regionDescription, expandType, parentContext);
-
-    const response = await openai.images.generate({
-      model: 'dall-e-3',
-      prompt,
-      n: 1,
-      size: '1024x1024',
-      quality: 'standard',
-      response_format: 'url',
-    });
-
-    const imageUrl = response.data[0]?.url;
-    
-    if (!imageUrl) {
-      throw new Error('No image URL in response');
-    }
-
-    return {
-      success: true,
-      imageUrl,
-    };
-  } catch (error) {
-    console.error('Expand image generation error:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to generate expanded image',
     };
   }
 }

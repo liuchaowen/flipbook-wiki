@@ -1,26 +1,334 @@
 @import "tailwindcss";
 
+/* ============================================
+   Airbnb-Inspired Design System
+   Based on DESIGN.md specifications
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* === Primary Colors === */
+  --rausch: #ff385c;
+  --rausch-deep: #e00b41;
+  
+  /* === Secondary & Accent === */
+  --plus-magenta: #92174d;
+  --luxe-purple: #460479;
+  --info-blue: #428bff;
+  
+  /* === Surface & Background === */
+  --canvas-white: #ffffff;
+  --soft-cloud: #f7f7f7;
+  --hairline-gray: #dddddd;
+  
+  /* === Neutrals & Text === */
+  --ink-black: #222222;
+  --charcoal: #3f3f3f;
+  --ash-gray: #6a6a6a;
+  --mute-gray: #929292;
+  --stone-gray: #c1c1c1;
+  
+  /* === Semantic === */
+  --error-red: #c13515;
+  --error-deep: #b32505;
+  
+  /* === Translucent === */
+  --translucent-black: rgba(0, 0, 0, 0.24);
+  
+  /* === Border Radius Scale === */
+  --radius-sm: 4px;      /* Inline tags, chips */
+  --radius-md: 8px;      /* Buttons, dropdowns */
+  --radius-lg: 14px;     /* Cards, images */
+  --radius-xl: 20px;     /* Large buttons, panels */
+  --radius-2xl: 32px;    /* Search bar pill */
+  --radius-full: 50%;    /* Circular buttons, avatars */
+  
+  /* === Shadows === */
+  --shadow-elevation-1: rgba(0, 0, 0, 0.08) 0 4px 12px;
+  --shadow-elevation-2: rgba(0, 0, 0, 0.02) 0 0 0 1px, rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0;
+  --shadow-focus-ring: 0 0 0 2px var(--ink-black);
+  --shadow-white-separator: rgb(255, 255, 255) 0 0 0 4px;
+  
+  /* === Typography === */
+  --font-family: 'Inter', -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  
+  /* Font Weights */
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Font Sizes */
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 16px;
+  --text-lg: 20px;
+  --text-xl: 22px;
+  --text-2xl: 28px;
+  
+  /* Line Heights */
+  --leading-tight: 1.18;
+  --leading-normal: 1.25;
+  --leading-relaxed: 1.43;
+  
+  /* Letter Spacing */
+  --tracking-tight: -0.01em;
+  --tracking-tighter: -0.025em;
+  
+  /* === Spacing (8px base unit) === */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--canvas-white);
+  --color-foreground: var(--ink-black);
+  --font-sans: var(--font-family);
+  
+  /* Custom colors for Tailwind */
+  --color-rausch: var(--rausch);
+  --color-rausch-deep: var(--rausch-deep);
+  --color-ink-black: var(--ink-black);
+  --color-charcoal: var(--charcoal);
+  --color-ash-gray: var(--ash-gray);
+  --color-mute-gray: var(--mute-gray);
+  --color-stone-gray: var(--stone-gray);
+  --color-hairline: var(--hairline-gray);
+  --color-soft-cloud: var(--soft-cloud);
+  --color-canvas: var(--canvas-white);
+  --color-info-blue: var(--info-blue);
+  --color-error-red: var(--error-red);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* === Base Styles === */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--canvas-white);
+  color: var(--ink-black);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-normal);
+}
+
+/* === Typography Classes === */
+.heading-section {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-relaxed);
+  letter-spacing: 0;
+}
+
+.heading-subsection {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.025em;
+}
+
+.text-body {
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-normal);
+}
+
+.text-caption {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.29;
+}
+
+.text-micro {
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.33;
+}
+
+/* === Button Styles === */
+.btn-primary {
+  background: var(--rausch);
+  color: var(--canvas-white);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-md);
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: var(--rausch-deep);
+}
+
+.btn-primary:active {
+  transform: scale(0.92);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.btn-primary:disabled {
+  background: var(--stone-gray);
+  color: var(--mute-gray);
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: var(--canvas-white);
+  color: var(--ink-black);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-base);
+  padding: 10px 16px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--hairline-gray);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--ink-black);
+}
+
+.btn-icon {
+  background: var(--soft-cloud);
+  color: var(--ink-black);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btn-icon:hover {
+  background: var(--hairline-gray);
+}
+
+.btn-icon:active {
+  transform: scale(0.92);
+  box-shadow: var(--shadow-white-separator);
+}
+
+/* === Input Styles === */
+.input-text {
+  background: var(--canvas-white);
+  border: 1px solid var(--hairline-gray);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--ink-black);
+  transition: all 0.15s ease;
+}
+
+.input-text::placeholder {
+  color: var(--mute-gray);
+}
+
+.input-text:focus {
+  outline: none;
+  border-color: var(--ink-black);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.input-text:disabled {
+  background: var(--soft-cloud);
+  color: var(--mute-gray);
+  cursor: not-allowed;
+}
+
+/* === Card Styles === */
+.card {
+  background: var(--canvas-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline-gray);
+  box-shadow: var(--shadow-elevation-2);
+}
+
+.card-image {
+  border-radius: var(--radius-lg);
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+/* === Utility Classes === */
+.text-primary {
+  color: var(--ink-black);
+}
+
+.text-secondary {
+  color: var(--ash-gray);
+}
+
+.text-muted {
+  color: var(--mute-gray);
+}
+
+.text-rausch {
+  color: var(--rausch);
+}
+
+.bg-canvas {
+  background: var(--canvas-white);
+}
+
+.bg-cloud {
+  background: var(--soft-cloud);
+}
+
+.border-hairline {
+  border-color: var(--hairline-gray);
+}
+
+/* === Animation === */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* === Focus States === */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+/* === Scrollbar Styling === */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--soft-cloud);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--stone-gray);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mute-gray);
 }

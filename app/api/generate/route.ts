@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateImage } from '@/lib/ai/wanxiang';
+import { generateImage } from '@/lib/ai/openai';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { prompt, style = 'infographic' } = body;
+    const { prompt } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -14,8 +14,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 生成图像
-    const result = await generateImage(prompt, style);
+    // 生成图像（等轴测插画风格）
+    const result = await generateImage(prompt);
 
     if (!result.success || !result.imageUrl) {
       return NextResponse.json(
@@ -34,7 +34,6 @@ export async function POST(request: NextRequest) {
         url: result.imageUrl,
         prompt: result.revisedPrompt || prompt,
         originalPrompt: prompt,
-        style,
         createdAt: new Date().toISOString(),
         regions: [],
       },

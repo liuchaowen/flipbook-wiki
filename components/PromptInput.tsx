@@ -1,28 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 
 interface PromptInputProps {
-    onSubmit: (prompt: string, style: string) => void;
+    onSubmit: (prompt: string) => void;
     isLoading?: boolean;
 }
 
-const STYLES = [
-    { id: 'infographic', name: '信息图', icon: '📊', description: '清晰的信息布局' },
-    { id: 'illustration', name: '插画', icon: '🎨', description: '艺术风格插画' },
-    { id: 'realistic', name: '写实', icon: '📷', description: '照片级真实感' },
-    { id: 'artistic', name: '艺术', icon: '🖼️', description: '创意艺术风格' },
-];
-
 export default function PromptInput({ onSubmit, isLoading = false }: PromptInputProps) {
     const [prompt, setPrompt] = useState('');
-    const [selectedStyle, setSelectedStyle] = useState('infographic');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (prompt.trim() && !isLoading) {
-            onSubmit(prompt.trim(), selectedStyle);
+            onSubmit(prompt.trim());
         }
     };
 
@@ -30,70 +21,95 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
         '巴黎旅游攻略',
         '太阳系行星介绍',
         '咖啡制作流程',
-        '人体血液循环系统',
         '中国历史朝代演变',
         '全球气候类型分布',
     ];
 
     return (
-        <div className="w-full max-w-4xl mx-auto">
+        <div className="w-full max-w-3xl mx-auto">
+            {/* 标题区域 */}
+            <div className="text-center mb-8">
+                <h1 className="text-2xl font-bold text-[var(--ink-black)] mb-2" style={{ fontSize: '28px', fontWeight: 700 }}>
+                    探索知识的无限可能
+                </h1>
+                <p className="text-[var(--ash-gray)]" style={{ fontSize: '16px', fontWeight: 500 }}>
+                    输入主题，AI 将为你生成可视化探索之旅
+                </p>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* 主输入框 */}
-                <div className="relative">
-                    <input
-                        type="text"
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                        placeholder="输入你想探索的主题..."
-                        disabled={isLoading}
-                        className="w-full px-6 py-4 text-lg bg-gray-800/50 border border-gray-700 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50"
-                    />
+                {/* 搜索栏样式输入框 - Airbnb 风格 */}
+                <div
+                    className="relative flex items-center bg-[var(--canvas-white)] border border-[var(--hairline-gray)]"
+                    style={{
+                        borderRadius: '32px',
+                        boxShadow: 'rgba(0, 0, 0, 0.04) 0 2px 6px 0',
+                    }}
+                >
+                    <div className="flex-1 px-6 py-4">
+                        <input
+                            type="text"
+                            value={prompt}
+                            onChange={(e) => setPrompt(e.target.value)}
+                            placeholder="输入你想探索的主题..."
+                            disabled={isLoading}
+                            className="w-full bg-transparent text-[var(--ink-black)] placeholder-[var(--mute-gray)] focus:outline-none"
+                            style={{ fontSize: '14px', fontWeight: 500, lineHeight: 1.25 }}
+                        />
+                    </div>
+
+                    {/* 提交按钮 - Rausch 圆形按钮 */}
                     <button
                         type="submit"
                         disabled={!prompt.trim() || isLoading}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors"
+                        className="flex items-center justify-center mr-3 transition-all"
+                        style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '50%',
+                            background: !prompt.trim() || isLoading ? 'var(--stone-gray)' : 'var(--rausch)',
+                            cursor: !prompt.trim() || isLoading ? 'not-allowed' : 'pointer',
+                            transform: 'scale(1)',
+                        }}
                     >
                         {isLoading ? (
-                            <span className="flex items-center gap-2">
-                                <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                                </svg>
-                                生成中
-                            </span>
+                            <svg
+                                className="w-5 h-5 animate-spin text-white"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    className="opacity-25"
+                                    cx="12" cy="12" r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                    fill="none"
+                                />
+                                <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                />
+                            </svg>
                         ) : (
-                            '生成'
+                            <svg
+                                className="w-5 h-5 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
                         )}
                     </button>
                 </div>
 
-                {/* 风格选择 */}
+                {/* 示例提示词 - Pill 按钮样式 */}
                 <div className="space-y-3">
-                    <label className="text-gray-400 text-sm">选择风格</label>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        {STYLES.map((style) => (
-                            <motion.button
-                                key={style.id}
-                                type="button"
-                                onClick={() => setSelectedStyle(style.id)}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className={`p-4 rounded-xl border-2 transition-all ${selectedStyle === style.id
-                                        ? 'border-blue-500 bg-blue-500/20'
-                                        : 'border-gray-700 bg-gray-800/30 hover:border-gray-600'
-                                    }`}
-                            >
-                                <span className="text-2xl">{style.icon}</span>
-                                <p className="text-white font-medium mt-2">{style.name}</p>
-                                <p className="text-gray-400 text-xs mt-1">{style.description}</p>
-                            </motion.button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* 示例提示词 */}
-                <div className="space-y-3">
-                    <label className="text-gray-400 text-sm">试试这些示例</label>
                     <div className="flex flex-wrap gap-2">
                         {EXAMPLE_PROMPTS.map((example) => (
                             <button
@@ -101,7 +117,12 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
                                 type="button"
                                 onClick={() => setPrompt(example)}
                                 disabled={isLoading}
-                                className="px-4 py-2 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 rounded-full text-gray-300 text-sm transition-colors disabled:opacity-50"
+                                className="px-4 py-2 bg-[var(--canvas-white)] border border-[var(--hairline-gray)] text-[var(--ink-black)] transition-all hover:border-[var(--ink-black)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                style={{
+                                    fontSize: '14px',
+                                    fontWeight: 500,
+                                    borderRadius: '20px',
+                                }}
                             >
                                 {example}
                             </button>

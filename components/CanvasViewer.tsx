@@ -139,7 +139,10 @@ export default function CanvasViewer({
     };
 
     return (
-        <div className="relative w-full h-full overflow-hidden bg-gray-900">
+        <div
+            className="relative w-full h-full overflow-hidden"
+            style={{ background: 'var(--soft-cloud)' }}
+        >
             {/* 图片容器 */}
             <div
                 ref={containerRef}
@@ -161,71 +164,151 @@ export default function CanvasViewer({
                         src={imageUrl}
                         alt="Generated visualization"
                         className="max-w-none select-none"
+                        style={{ borderRadius: '14px' }}
                         onLoad={handleImageLoad}
                         draggable={false}
                     />
 
-                    {/* 区域高亮 */}
+                    {/* 区域高亮 - Airbnb 风格 */}
                     {regions.map((region) => (
                         <div
                             key={region.id}
-                            className={`absolute pointer-events-none transition-all duration-200 ${hoveredRegion?.id === region.id
-                                    ? 'bg-blue-500/30 border-2 border-blue-400'
-                                    : 'border border-transparent'
-                                }`}
+                            className="absolute pointer-events-none transition-all duration-200"
                             style={{
                                 left: `${region.bounds.x}%`,
                                 top: `${region.bounds.y}%`,
                                 width: `${region.bounds.width}%`,
                                 height: `${region.bounds.height}%`,
+                                background: hoveredRegion?.id === region.id
+                                    ? 'rgba(255, 56, 92, 0.15)'
+                                    : 'transparent',
+                                border: hoveredRegion?.id === region.id
+                                    ? '2px solid var(--rausch)'
+                                    : '1px solid transparent',
+                                borderRadius: '8px',
                             }}
                         />
                     ))}
                 </motion.div>
             </div>
 
-            {/* 缩放控制 */}
-            <div className="absolute bottom-4 right-4 flex gap-2">
+            {/* 缩放控制 - 圆形图标按钮 */}
+            <div
+                className="absolute bottom-4 right-4 flex gap-2"
+            >
                 <button
                     onClick={handleZoomOut}
-                    className="p-2 bg-gray-800/80 hover:bg-gray-700 rounded-lg text-white transition-colors"
+                    className="flex items-center justify-center transition-all"
+                    style={{
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '50%',
+                        background: 'var(--canvas-white)',
+                        border: '1px solid var(--hairline-gray)',
+                        boxShadow: 'rgba(255, 255, 255) 0 0 0 4px',
+                    }}
                     title="缩小"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="var(--ink-black)"
+                        viewBox="0 0 24 24"
+                    >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                     </svg>
                 </button>
                 <button
                     onClick={handleResetZoom}
-                    className="px-3 py-2 bg-gray-800/80 hover:bg-gray-700 rounded-lg text-white text-sm transition-colors"
+                    className="flex items-center justify-center transition-all"
+                    style={{
+                        minWidth: '60px',
+                        height: '44px',
+                        borderRadius: '20px',
+                        background: 'var(--canvas-white)',
+                        border: '1px solid var(--hairline-gray)',
+                        color: 'var(--ink-black)',
+                        fontSize: '14px',
+                        fontWeight: 500,
+                        boxShadow: 'rgba(255, 255, 255) 0 0 0 4px',
+                    }}
                     title="重置"
                 >
                     {Math.round(scale * 100)}%
                 </button>
                 <button
                     onClick={handleZoomIn}
-                    className="p-2 bg-gray-800/80 hover:bg-gray-700 rounded-lg text-white transition-colors"
+                    className="flex items-center justify-center transition-all"
+                    style={{
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '50%',
+                        background: 'var(--canvas-white)',
+                        border: '1px solid var(--hairline-gray)',
+                        boxShadow: 'rgba(255, 255, 255) 0 0 0 4px',
+                    }}
                     title="放大"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="var(--ink-black)"
+                        viewBox="0 0 24 24"
+                    >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
                 </button>
             </div>
 
-            {/* 悬停区域信息 */}
+            {/* 悬停区域信息 - Airbnb 卡片风格 */}
             <AnimatePresence>
                 {hoveredRegion && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 max-w-xs"
+                        className="absolute top-4 left-4 max-w-xs"
+                        style={{
+                            background: 'var(--canvas-white)',
+                            borderRadius: '14px',
+                            border: '1px solid var(--hairline-gray)',
+                            boxShadow: 'rgba(0, 0, 0, 0.02) 0 0 0 1px, rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0',
+                            padding: '16px',
+                        }}
                     >
-                        <h3 className="text-white font-semibold text-lg">{hoveredRegion.name}</h3>
-                        <p className="text-gray-300 text-sm mt-1">{hoveredRegion.description}</p>
+                        <h3
+                            className="font-semibold"
+                            style={{
+                                color: 'var(--ink-black)',
+                                fontSize: '16px',
+                                fontWeight: 600,
+                                lineHeight: 1.25,
+                            }}
+                        >
+                            {hoveredRegion.name}
+                        </h3>
+                        <p
+                            className="mt-1"
+                            style={{
+                                color: 'var(--ash-gray)',
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                lineHeight: 1.43,
+                            }}
+                        >
+                            {hoveredRegion.description}
+                        </p>
                         {hoveredRegion.canExpand && (
-                            <p className="text-blue-400 text-xs mt-2">点击查看详情</p>
+                            <p
+                                className="mt-2"
+                                style={{
+                                    color: 'var(--rausch)',
+                                    fontSize: '12px',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                点击查看详情
+                            </p>
                         )}
                     </motion.div>
                 )}
@@ -238,11 +321,34 @@ export default function CanvasViewer({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center"
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{
+                            background: 'rgba(255, 255, 255, 0.8)',
+                            backdropFilter: 'blur(4px)',
+                        }}
                     >
                         <div className="text-center">
-                            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                            <p className="text-white mt-4">AI 正在生成...</p>
+                            <div
+                                className="mx-auto"
+                                style={{
+                                    width: '48px',
+                                    height: '48px',
+                                    border: '3px solid var(--hairline-gray)',
+                                    borderTopColor: 'var(--rausch)',
+                                    borderRadius: '50%',
+                                    animation: 'spin 1s linear infinite',
+                                }}
+                            />
+                            <p
+                                className="mt-4"
+                                style={{
+                                    color: 'var(--ink-black)',
+                                    fontSize: '16px',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                AI 正在生成...
+                            </p>
                         </div>
                     </motion.div>
                 )}
