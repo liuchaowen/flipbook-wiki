@@ -17,7 +17,7 @@
 - **Tailwind CSS** - 样式框架
 - **Framer Motion** - 动画效果
 - **Zustand** - 状态管理
-- **OpenAI API** - DALL-E 3 (图像生成) + GPT-4 Vision (区域识别)
+- **阿里云 DashScope API** - qwen-image-2.0-pro (图像生成) + qwen-vl-max (区域识别)
 
 ## 项目结构
 
@@ -37,7 +37,7 @@ flipbook-wiki/
 ├── lib/
 │   ├── store.ts                 # Zustand 状态管理
 │   └── ai/
-│       └── openai.ts            # OpenAI 集成
+│       └── bailian.ts           # 阿里云百炼集成
 ├── types/
 │   └── index.ts                 # 类型定义
 └── .env.local.example           # 环境变量示例
@@ -53,7 +53,7 @@ npm install
 
 ### 2. 配置环境变量
 
-复制 `.env.local.example` 为 `.env.local` 并填入你的 OpenAI API Key：
+复制 `.env.local.example` 为 `.env.local` 并填入你的阿里云 DashScope API Key：
 
 ```bash
 cp .env.local.example .env.local
@@ -62,7 +62,7 @@ cp .env.local.example .env.local
 编辑 `.env.local`：
 
 ```
-OPENAI_API_KEY=sk-your-api-key-here
+DASHSCOPE_API_KEY=sk-your-dashscope-api-key-here
 ```
 
 ### 3. 启动开发服务器
@@ -139,14 +139,14 @@ npm run dev
 
 1. 将代码推送到 GitHub
 2. 在 Vercel 创建新项目
-3. 设置环境变量 `OPENAI_API_KEY`
+3. 设置环境变量 `DASHSCOPE_API_KEY`
 4. 部署完成
 
 ## 注意事项
 
-- OpenAI API 调用需要费用，建议设置使用限制
+- 阿里云 DashScope API 调用需要费用，建议设置使用限制
 - 图像生成约需 10-20 秒，请耐心等待
-- 首次使用需要配置有效的 OpenAI API Key
+- 首次使用需要配置有效的 DashScope API Key
 
 ## License
 

@@ -26,15 +26,24 @@ export default function FlipbookViewer() {
         updateImageRegions,
     } = useFlipbookStore();
 
+    // 获取窗口可用尺寸（除去顶部导航栏高度）
+    const getAvailableSize = useCallback(() => {
+        const headerHeight = 80; // 顶部导航栏高度
+        const width = window.innerWidth;
+        const height = window.innerHeight - headerHeight;
+        return { width, height };
+    }, []);
+
     // 生成图像
     const handleGenerate = useCallback(async (prompt: string) => {
         setLoading(true, '正在生成可视化图像...');
 
         try {
+            const { width, height } = getAvailableSize();
             const response = await fetch('/api/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt }),
+                body: JSON.stringify({ prompt, width, height }),
             });
 
             const data = await response.json();
@@ -174,7 +183,7 @@ export default function FlipbookViewer() {
 
     return (
         <div
-            className="h-screen flex flex-col"
+            className="h-screen flex flex-col overflow-hidden"
             style={{
                 background: 'var(--canvas-white)',
                 color: 'var(--ink-black)',
@@ -204,7 +213,7 @@ export default function FlipbookViewer() {
                     </h1>
                 </div>
 
-                {/* 导航按钮 - 圆形图标按钮 */}
+                {/* 中间导航按钮 - 圆形图标按钮 */}
                 {currentImage && (
                     <div className="flex items-center gap-2">
                         <button
@@ -267,6 +276,7 @@ export default function FlipbookViewer() {
                         </span>
                     </div>
                 )}
+
             </header>
 
             {/* 主内容区 */}

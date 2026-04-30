@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { analyzeImageRegion } from '@/lib/ai/openai';
+import { analyzeImageRegion } from '@/lib/ai/bailian';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {

@@ -18,11 +18,11 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
     };
 
     const EXAMPLE_PROMPTS = [
-        '巴黎旅游攻略',
-        '太阳系行星介绍',
-        '咖啡制作流程',
-        '中国历史朝代演变',
-        '全球气候类型分布',
+        '中国旅游攻略',
+        '宇宙到地球的视角',
+        '五一广州两日游指南',
+        '极端气候形成演变',
+        '歼20战斗机组成'
     ];
 
     return (

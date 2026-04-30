@@ -30,13 +30,19 @@ export default function CanvasViewer({
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const [hoveredRegion, setHoveredRegion] = useState<ImageRegion | null>(null);
+    const [ripplePosition, setRipplePosition] = useState<{ x: number; y: number } | null>(null);
 
     // 更新容器和图片尺寸
     useEffect(() => {
         const updateSizes = () => {
             if (containerRef.current) {
                 const rect = containerRef.current.getBoundingClientRect();
-                setContainerSize({ width: rect.width, height: rect.height });
+                // 确保高度不超过可视区域
+                const maxHeight = window.innerHeight - 80; // 减去顶部导航栏高度
+                setContainerSize({
+                    width: rect.width,
+                    height: Math.min(rect.height, maxHeight)
+                });
             }
         };
 
@@ -50,12 +56,16 @@ export default function CanvasViewer({
         const img = e.currentTarget;
         setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
 
-        // 计算适应容器的缩放比例
+        // 计算适应容器的缩放比例，考虑顶部导航栏高度
         if (containerRef.current) {
             const containerRect = containerRef.current.getBoundingClientRect();
-            const scaleX = containerRect.width / img.naturalWidth;
-            const scaleY = containerRect.height / img.naturalHeight;
-            const fitScale = Math.min(scaleX, scaleY, 1);
+            // 使用实际可视高度，减去导航栏高度和底部边距
+            const availableHeight = window.innerHeight - 80 - 32; // 80px 导航栏 + 32px 底部边距
+            const availableWidth = containerRect.width - 32; // 左右边距
+
+            const scaleX = availableWidth / img.naturalWidth;
+            const scaleY = availableHeight / img.naturalHeight;
+            const fitScale = Math.min(scaleX, scaleY, 1); // 不超过原始大小
             setScale(fitScale);
         }
     };
@@ -68,8 +78,16 @@ export default function CanvasViewer({
         if (!img) return;
 
         const rect = img.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * imageSize.width;
-        const y = ((e.clientY - rect.top) / rect.height) * imageSize.height;
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+        const x = (clickX / rect.width) * imageSize.width;
+        const y = (clickY / rect.height) * imageSize.height;
+
+        // 设置涟漪位置（相对于图片元素，使用百分比）
+        setRipplePosition({
+            x: (clickX / rect.width) * 100,
+            y: (clickY / rect.height) * 100,
+        });
 
         onImageClick({
             x,
@@ -78,6 +96,16 @@ export default function CanvasViewer({
             imageHeight: imageSize.height,
         });
     }, [isDragging, isLoading, imageSize, onImageClick]);
+
+    // 当加载状态结束时清除涟漪
+    useEffect(() => {
+        if (!isLoading && ripplePosition) {
+            const timer = setTimeout(() => {
+                setRipplePosition(null);
+            }, 600); // 涟漪动画持续时间
+            return () => clearTimeout(timer);
+        }
+    }, [isLoading, ripplePosition]);
 
     // 处理鼠标移动（检测悬停区域）
     const handleMouseMove = useCallback((e: React.MouseEvent) => {
@@ -189,6 +217,117 @@ export default function CanvasViewer({
                             }}
                         />
                     ))}
+
+                    {/* 水波涟漪效果 - 在图片内部 */}
+                    <AnimatePresence>
+                        {ripplePosition && (
+                            <motion.div
+                                className="absolute pointer-events-none"
+                                style={{
+                                    left: `${ripplePosition.x}%`,
+                                    top: `${ripplePosition.y}%`,
+                                    transform: 'translate(-50%, -50%)',
+                                }}
+                            >
+                                {/* 外圈涟漪 */}
+                                <motion.div
+                                    initial={{ scale: 0, opacity: 0.6 }}
+                                    animate={{
+                                        scale: isLoading ? [0, 2.5] : [2.5, 3],
+                                        opacity: isLoading ? [0.6, 0.3] : [0.3, 0]
+                                    }}
+                                    exit={{ scale: 3, opacity: 0 }}
+                                    transition={{
+                                        duration: isLoading ? 1.5 : 0.3,
+                                        ease: 'easeOut',
+                                        repeat: isLoading ? Infinity : 0
+                                    }}
+                                    style={{
+                                        width: '100px',
+                                        height: '100px',
+                                        borderRadius: '50%',
+                                        border: '2px solid var(--rausch)',
+                                        background: 'rgba(255, 56, 92, 0.1)',
+                                    }}
+                                />
+                                {/* 中圈涟漪 */}
+                                <motion.div
+                                    className="absolute"
+                                    initial={{ scale: 0, opacity: 0.5 }}
+                                    animate={{
+                                        scale: isLoading ? [0, 1.8] : [1.8, 2.2],
+                                        opacity: isLoading ? [0.5, 0.2] : [0.2, 0]
+                                    }}
+                                    exit={{ scale: 2.2, opacity: 0 }}
+                                    transition={{
+                                        duration: isLoading ? 1.2 : 0.25,
+                                        ease: 'easeOut',
+                                        repeat: isLoading ? Infinity : 0,
+                                        delay: 0.1
+                                    }}
+                                    style={{
+                                        width: '100px',
+                                        height: '100px',
+                                        borderRadius: '50%',
+                                        border: '2px solid var(--rausch)',
+                                        background: 'rgba(255, 56, 92, 0.05)',
+                                        left: 0,
+                                        top: 0,
+                                        transform: 'translate(-50%, -50%)',
+                                    }}
+                                />
+                                {/* 内圈涟漪 */}
+                                <motion.div
+                                    className="absolute"
+                                    initial={{ scale: 0, opacity: 0.4 }}
+                                    animate={{
+                                        scale: isLoading ? [0, 1.2] : [1.2, 1.5],
+                                        opacity: isLoading ? [0.4, 0.15] : [0.15, 0]
+                                    }}
+                                    exit={{ scale: 1.5, opacity: 0 }}
+                                    transition={{
+                                        duration: isLoading ? 1 : 0.2,
+                                        ease: 'easeOut',
+                                        repeat: isLoading ? Infinity : 0,
+                                        delay: 0.2
+                                    }}
+                                    style={{
+                                        width: '100px',
+                                        height: '100px',
+                                        borderRadius: '50%',
+                                        border: '2px solid var(--rausch)',
+                                        background: 'rgba(255, 56, 92, 0.08)',
+                                        left: 0,
+                                        top: 0,
+                                        transform: 'translate(-50%, -50%)',
+                                    }}
+                                />
+                                {/* 中心点 */}
+                                <motion.div
+                                    className="absolute"
+                                    initial={{ scale: 0, opacity: 1 }}
+                                    animate={{
+                                        scale: isLoading ? 1 : [1, 0],
+                                        opacity: isLoading ? 1 : 0
+                                    }}
+                                    exit={{ scale: 0, opacity: 0 }}
+                                    transition={{
+                                        duration: 0.2,
+                                        ease: 'easeOut'
+                                    }}
+                                    style={{
+                                        width: '12px',
+                                        height: '12px',
+                                        borderRadius: '50%',
+                                        background: 'var(--rausch)',
+                                        left: 0,
+                                        top: 0,
+                                        transform: 'translate(-50%, -50%)',
+                                    }}
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </motion.div>
             </div>
 
@@ -314,44 +453,6 @@ export default function CanvasViewer({
                 )}
             </AnimatePresence>
 
-            {/* 加载遮罩 */}
-            <AnimatePresence>
-                {isLoading && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 flex items-center justify-center"
-                        style={{
-                            background: 'rgba(255, 255, 255, 0.8)',
-                            backdropFilter: 'blur(4px)',
-                        }}
-                    >
-                        <div className="text-center">
-                            <div
-                                className="mx-auto"
-                                style={{
-                                    width: '48px',
-                                    height: '48px',
-                                    border: '3px solid var(--hairline-gray)',
-                                    borderTopColor: 'var(--rausch)',
-                                    borderRadius: '50%',
-                                    animation: 'spin 1s linear infinite',
-                                }}
-                            />
-                            <p
-                                className="mt-4"
-                                style={{
-                                    color: 'var(--ink-black)',
-                                    fontSize: '16px',
-                                    fontWeight: 500,
-                                }}
-                            >
-                            </p>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </div>
     );
 }

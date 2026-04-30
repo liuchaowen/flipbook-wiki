@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateExpandedImage } from '@/lib/ai/openai';
+import { generateExpandedImage } from '@/lib/ai/bailian';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
