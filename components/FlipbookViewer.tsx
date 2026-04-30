@@ -2,7 +2,8 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { type Locale } from '@/i18n/config';
 import CanvasViewer from './CanvasViewer';
 import PromptInput from './PromptInput';
 import Header from './Header';
@@ -12,6 +13,7 @@ import { useFlipbookStore } from '@/lib/store';
 
 export default function FlipbookViewer() {
     const t = useTranslations('flipbookViewer');
+    const locale = useLocale() as Locale;
 
     const {
         currentImage,
@@ -60,7 +62,7 @@ export default function FlipbookViewer() {
             const response = await fetch('/api/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt, width, height }),
+                body: JSON.stringify({ prompt, width, height, locale }),
             });
 
             const data = await response.json();
@@ -96,7 +98,7 @@ export default function FlipbookViewer() {
         } finally {
             setLoading(false);
         }
-    }, [setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible, t]);
+    }, [setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible, t, locale, getAvailableSize]);
 
     // 处理图像点击
     const handleImageClick = useCallback(async (position: ClickPosition) => {
@@ -113,6 +115,7 @@ export default function FlipbookViewer() {
                     imageUrl: currentImage.url,
                     position,
                     context: currentImage.prompt,
+                    locale,
                 }),
             });
 
@@ -137,7 +140,7 @@ export default function FlipbookViewer() {
         } finally {
             setLoading(false);
         }
-    }, [currentImage, isLoading, setLoading, updateImageRegions, t]);
+    }, [currentImage, isLoading, setLoading, updateImageRegions, t, locale]);
 
     // 展开区域
     const handleExpand = useCallback(async (region: ImageRegion) => {
@@ -159,6 +162,7 @@ export default function FlipbookViewer() {
                     parentContext: currentImage.prompt,
                     width,
                     height,
+                    locale,
                 }),
             });
 
@@ -196,7 +200,7 @@ export default function FlipbookViewer() {
         } finally {
             setLoading(false);
         }
-    }, [currentImage, setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible, t]);
+    }, [currentImage, setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible, t, locale, getAvailableSize]);
 
     // 导航控制
     const handleBack = useCallback(() => {

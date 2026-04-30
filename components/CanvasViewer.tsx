@@ -55,21 +55,6 @@ export default function CanvasViewer({
     const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
         const img = e.currentTarget;
         setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
-
-        // 计算填充容器的缩放比例，让图片完全填充可用区域
-        if (containerRef.current) {
-            const containerRect = containerRef.current.getBoundingClientRect();
-            // 使用实际可视高度，减去导航栏高度
-            const availableHeight = window.innerHeight - 72; // 72px 导航栏
-            const availableWidth = containerRect.width;
-
-            // 计算缩放比例，让图片完全填充容器（cover 模式）
-            const scaleX = availableWidth / img.naturalWidth;
-            const scaleY = availableHeight / img.naturalHeight;
-            // 使用较大的缩放比例，确保图片完全填充容器
-            const fitScale = Math.max(scaleX, scaleY);
-            setScale(fitScale);
-        }
     };
 
     // 处理点击事件
@@ -164,29 +149,42 @@ export default function CanvasViewer({
     const handleZoomIn = () => setScale(prev => Math.min(prev * 1.2, 3));
     const handleZoomOut = () => setScale(prev => Math.max(prev / 1.2, 0.3));
     const handleResetZoom = () => {
-        setScale(1);
         setPosition({ x: 0, y: 0 });
     };
+
+    // 鼠标滚轮缩放
+    const handleWheel = useCallback((e: React.WheelEvent) => {
+        e.preventDefault();
+
+        // 计算缩放方向和比例
+        const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // 向下滚动缩小，向上滚动放大
+
+        setScale(prev => {
+            const newScale = prev * zoomFactor;
+            // 限制缩放范围在 30% 到 300% 之间
+            return Math.min(Math.max(newScale, 0.3), 3);
+        });
+    }, []);
 
     return (
         <div
             className="relative w-full h-full overflow-hidden"
-            style={{ background: 'var(--color-primary-beige)' }}
         >
             {/* 图片容器 - 填充整个区域 */}
             <div
                 ref={containerRef}
-                className="w-full h-full flex items-start justify-start"
+                className="w-full h-full flex items-center justify-center"
                 onClick={handleClick}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
+                onWheel={handleWheel}
             >
                 <motion.div
                     style={{
                         transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-                        transformOrigin: 'top left',
+                        transformOrigin: 'center center',
                     }}
                     className="relative"
                 >
@@ -195,9 +193,9 @@ export default function CanvasViewer({
                         src={imageUrl}
                         alt="Generated visualization"
                         className="block select-none"
-                        style={{ 
+                        style={{
                             borderRadius: '0',
-                            border: '2px solid var(--color-ink-muted)',
+                            border: 'none',
                         }}
                         onLoad={handleImageLoad}
                         draggable={false}

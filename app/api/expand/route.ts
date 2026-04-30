@@ -23,7 +23,7 @@ function convertToSupportedSize(width: number, height: number): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { imageId, regionName, regionDescription, expandType, parentContext, width, height } = body;
+    const { imageId, regionName, regionDescription, expandType, parentContext, width, height, locale } = body;
 
     if (!regionName || !regionDescription) {
       return NextResponse.json(
@@ -39,13 +39,14 @@ export async function POST(request: NextRequest) {
       console.log(`展开窗口尺寸: ${width}x${height}, 选择图片尺寸: ${imageSize}`);
     }
 
-    // 生成展开图像
+    // 生成展开图像，传入语言参数
     const result = await generateExpandedImage(
       regionName,
       regionDescription,
       expandType || 'detail',
       parentContext || '',
-      imageSize
+      imageSize,
+      locale
     );
 
     if (!result.success || !result.imageUrl) {

@@ -23,7 +23,7 @@ function convertToSupportedSize(width: number, height: number): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { prompt, width, height } = body;
+    const { prompt, width, height, locale } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
       console.log(`窗口尺寸: ${width}x${height}, 选择图片尺寸: ${imageSize}`);
     }
 
-    // 生成图像（等轴测插画风格）
-    const result = await generateImage(prompt, imageSize);
+    // 生成图像（等轴测插画风格），传入语言参数
+    const result = await generateImage(prompt, imageSize, locale);
 
     if (!result.success || !result.imageUrl) {
       return NextResponse.json(

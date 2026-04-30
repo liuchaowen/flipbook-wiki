@@ -1,13 +1,33 @@
 // 提示词管理模块
 // 用于管理和构建AI图像生成的提示词
 
+import { Locale } from '@/i18n/config';
+
+// 将 locale 转换为简化的语言代码
+export function localeToLanguage(locale: Locale | string): string {
+  const mapping: Record<string, string> = {
+    'zh-CN': 'zh-CN',
+    'zh-TW': 'zh-TW',
+    'en': 'en',
+    'es': 'es',
+    'de': 'de',
+    'it': 'it',
+    'fr': 'fr',
+    'th': 'th',
+    'ja': 'ja',
+    'ko': 'ko',
+    'ru': 'ru',
+  };
+  return mapping[locale] || 'en';
+}
+
 // 检测文本语言
 // 返回 'zh'（中文）、'en'（英文）或其他语言代码
 export function detectLanguage(text: string): string {
   // 检测中文字符
   const chineseRegex = /[\u4e00-\u9fff]/;
   if (chineseRegex.test(text)) {
-    return 'zh';
+    return 'zh-CN';
   }
   
   // 检测日文字符
@@ -22,6 +42,18 @@ export function detectLanguage(text: string): string {
     return 'ko';
   }
   
+  // 检测泰文字符
+  const thaiRegex = /[\u0e00-\u0e7f]/;
+  if (thaiRegex.test(text)) {
+    return 'th';
+  }
+  
+  // 检测西里尔字母（俄语）
+  const cyrillicRegex = /[\u0400-\u04ff]/;
+  if (cyrillicRegex.test(text)) {
+    return 'ru';
+  }
+  
   // 默认为英文
   return 'en';
 }
@@ -29,10 +61,17 @@ export function detectLanguage(text: string): string {
 // 获取语言对应的文字指令
 function getLanguageTextInstruction(language: string): string {
   const instructions: Record<string, string> = {
-    zh: 'All text labels, titles, and annotations in the image must be in Chinese (中文). Use clear, readable Chinese characters for all text elements.',
-    en: 'All text labels, titles, and annotations in the image must be in English. Use clear, readable English text for all text elements.',
-    ja: 'All text labels, titles, and annotations in the image must be in Japanese (日本語). Use clear, readable Japanese characters for all text elements.',
-    ko: 'All text labels, titles, and annotations in the image must be in Korean (한국어). Use clear, readable Korean characters for all text elements.',
+    'zh-CN': 'All text labels, titles, and annotations in the image must be in Simplified Chinese (简体中文). Use clear, readable Chinese characters for all text elements.',
+    'zh-TW': 'All text labels, titles, and annotations in the image must be in Traditional Chinese (繁體中文). Use clear, readable Chinese characters for all text elements.',
+    'en': 'All text labels, titles, and annotations in the image must be in English. Use clear, readable English text for all text elements.',
+    'es': 'All text labels, titles, and annotations in the image must be in Spanish (Español). Use clear, readable Spanish text for all text elements.',
+    'de': 'All text labels, titles, and annotations in the image must be in German (Deutsch). Use clear, readable German text for all text elements.',
+    'it': 'All text labels, titles, and annotations in the image must be in Italian (Italiano). Use clear, readable Italian text for all text elements.',
+    'fr': 'All text labels, titles, and annotations in the image must be in French (Français). Use clear, readable French text for all text elements.',
+    'th': 'All text labels, titles, and annotations in the image must be in Thai (ไทย). Use clear, readable Thai characters for all text elements.',
+    'ja': 'All text labels, titles, and annotations in the image must be in Japanese (日本語). Use clear, readable Japanese characters for all text elements.',
+    'ko': 'All text labels, titles, and annotations in the image must be in Korean (한국어). Use clear, readable Korean characters for all text elements.',
+    'ru': 'All text labels, titles, and annotations in the image must be in Russian (Русский). Use clear, readable Russian characters for all text elements.',
   };
   
   return instructions[language] || instructions.en;
@@ -72,6 +111,11 @@ export const ISOMETRIC_STYLE_TEMPLATE = {
     en: 'The style is clean line art combined with a soft pastel color palette (light blues, soft greens, and beige). The layout incorporates clean annotation labels, graphic design elements, and a minimalist aesthetic. High-quality architectural presentation style, professional and organized.',
     zh: '风格为清晰的线条艺术，配以柔和的粉彩色调（浅蓝、柔绿和米色）。布局包含清晰的标注标签、平面设计元素和极简美学。高质量的建筑展示风格，专业且有条理。',
   },
+  // 信息图风格指南（支持多语言）
+  infographicStyle: {
+    en: 'This is a professional infographic illustration. Leave adequate padding and white space around the edges of the image for a clean, balanced composition. Use a compact, elegant title at the top (small font size, not dominating the image). Mark key knowledge points and important areas with clear annotation labels and pointer lines. In the blank areas of the image, arrange a series of concise knowledge point summaries in an organized manner (using small text boxes or bullet points). Maximize information density while maintaining visual clarity and breathing room. The image should feel information-rich and educational, with proper margins for a polished look.',
+    zh: '这是一张专业的信息图插画。在图片四周留出适当的边距和留白，使构图干净、平衡。在顶部使用紧凑优雅的标题（小字体，不占据主导地位）。在图片的特定知识点或重要位置使用清晰的标注标签和指示线进行标注说明。在图片的空白处，以有序的方式罗列一系列简明的知识点摘要（使用小文本框或项目符号）。在保持视觉清晰和呼吸感的同时最大化信息密度。图片应具有丰富的信息量和教育价值，边距适当，整体精致美观。',
+  },
 };
 
 // 展开类型的英文修饰词
@@ -106,6 +150,12 @@ function getBaseStyle(language: string): string {
     || ISOMETRIC_STYLE_TEMPLATE.baseStyle.en;
 }
 
+// 获取信息图风格指南（根据语言）
+function getInfographicStyle(language: string): string {
+  return ISOMETRIC_STYLE_TEMPLATE.infographicStyle[language as keyof typeof ISOMETRIC_STYLE_TEMPLATE.infographicStyle]
+    || ISOMETRIC_STYLE_TEMPLATE.infographicStyle.en;
+}
+
 // 构建等距视角风格提示词
 export function buildIsometricPrompt(
   theme: string,
@@ -116,26 +166,28 @@ export function buildIsometricPrompt(
   const themeName = getThemeName(theme, language);
   const title = customTitle || themeName;
   const baseStyle = getBaseStyle(language);
+  const infographicStyle = getInfographicStyle(language);
   const textInstruction = getLanguageTextInstruction(language);
   
   // 根据语言选择提示词模板
-  if (language === 'zh') {
-    return `一张专业的${themeName}插画，标题为"${title}"。构图采用等距视角，融合宏观与微观视图。包含一个圆形放大窗口，突出展示${detailDescription}的特定细节。${baseStyle} ${textInstruction}`;
+  // 中文变体使用中文模板
+  if (language === 'zh-CN' || language === 'zh-TW' || language === 'zh') {
+    return `一张专业的${themeName}信息图插画，标题为"${title}"。构图采用等距视角，融合宏观与微观视图。在图片的特定知识点或重要位置使用清晰的标注标签和指示线进行标注说明，展示${detailDescription}的关键信息。在图片的空白处，以有序的方式罗列一系列简明的知识点摘要。${infographicStyle} ${baseStyle} ${textInstruction}`;
   }
   
   // 默认英文提示词
-  return `A professional ${themeName} illustration, titled "${title}". The composition features an isometric perspective with a blend of macro and micro views. It includes a circular magnification window highlighting a specific detail of ${detailDescription}. ${baseStyle} ${textInstruction}`;
+  return `A professional ${themeName} infographic illustration, titled "${title}". The composition features an isometric perspective with a blend of macro and micro views. Mark key knowledge points and important areas with clear annotation labels and pointer lines, highlighting key information about ${detailDescription}. In the blank areas of the image, arrange a series of concise knowledge point summaries in an organized manner. ${infographicStyle} ${baseStyle} ${textInstruction}`;
 }
 
 // 解析用户提示词，提取主题和细节
-export function parseUserPrompt(userPrompt: string): { theme: string; detail: string; title: string; language: string } {
-  // 检测用户输入的语言
-  const language = detectLanguage(userPrompt);
+export function parseUserPrompt(userPrompt: string, preferredLanguage?: string): { theme: string; detail: string; title: string; language: string } {
+  // 如果提供了首选语言，优先使用；否则检测用户输入的语言
+  const language = preferredLanguage || detectLanguage(userPrompt);
   
   // 尝试从用户输入中识别主题关键词
   const themeKeywords = Object.keys(ISOMETRIC_STYLE_TEMPLATE.themes);
   let detectedTheme = 'urban'; // 默认主题
-  let detectedDetail = language === 'zh' ? '一个关键区域' : 'a key area of interest';
+  let detectedDetail = (language === 'zh-CN' || language === 'zh-TW' || language === 'zh') ? '一个关键区域' : 'a key area of interest';
   let title = userPrompt;
   
   for (const keyword of themeKeywords) {
@@ -161,7 +213,7 @@ export function parseUserPrompt(userPrompt: string): { theme: string; detail: st
 // 支持两种模式：
 // 1. 直接传入主题和细节参数
 // 2. 从用户提示词中自动解析
-// 自动检测用户输入语言，生成对应语言的图片文字
+// 支持传入语言参数，生成对应语言的图片文字
 export function buildInfographicPrompt(
   userPrompt: string,
   options?: { theme?: string; detail?: string; title?: string; language?: string }
@@ -178,8 +230,8 @@ export function buildInfographicPrompt(
     title = options.title || userPrompt;
     language = options.language || detectLanguage(userPrompt);
   } else {
-    // 从用户提示词中解析
-    const parsed = parseUserPrompt(userPrompt);
+    // 从用户提示词中解析，传入首选语言
+    const parsed = parseUserPrompt(userPrompt, options?.language);
     theme = options?.theme || parsed.theme;
     detail = options?.detail || parsed.detail;
     title = options?.title || parsed.title;
@@ -194,25 +246,27 @@ export function buildExpandPrompt(
   regionName: string,
   regionDescription: string,
   expandType: string,
-  parentContext: string
+  parentContext: string,
+  language?: string
 ): string {
   const modifier = EXPAND_TYPE_MODIFIERS[expandType] || EXPAND_TYPE_MODIFIERS.detail;
   
-  // 从父上下文中提取主题和语言
-  const parsed = parseUserPrompt(parentContext);
+  // 从父上下文中提取主题，语言使用传入的或从上下文检测
+  const parsed = parseUserPrompt(parentContext, language);
   const theme = parsed.theme;
-  const language = parsed.language;
-  const themeName = getThemeName(theme, language);
-  const baseStyle = getBaseStyle(language);
-  const textInstruction = getLanguageTextInstruction(language);
+  const finalLanguage = language || parsed.language;
+  const themeName = getThemeName(theme, finalLanguage);
+  const baseStyle = getBaseStyle(finalLanguage);
+  const infographicStyle = getInfographicStyle(finalLanguage);
+  const textInstruction = getLanguageTextInstruction(finalLanguage);
   
   // 根据语言选择提示词模板
-  if (language === 'zh') {
-    return `一张专业的${themeName}插画，标题为"${regionName}"。构图采用等距视角，${modifier}。包含一个圆形放大窗口，突出展示${regionDescription}。这是"${parentContext}"的一部分。${baseStyle} ${textInstruction}`;
+  if (finalLanguage === 'zh-CN' || finalLanguage === 'zh-TW' || finalLanguage === 'zh') {
+    return `一张专业的${themeName}信息图插画，标题为"${regionName}"。构图采用等距视角，${modifier}。在图片的特定知识点或重要位置使用清晰的标注标签和指示线进行标注说明，展示${regionDescription}的关键信息。在图片的空白处，以有序的方式罗列一系列简明的知识点摘要。这是"${parentContext}"的一部分。${infographicStyle} ${baseStyle} ${textInstruction}`;
   }
   
   // 默认英文提示词
-  return `A professional ${themeName} illustration, titled "${regionName}". The composition features an isometric perspective with ${modifier}. It includes a circular magnification window highlighting ${regionDescription}. This is part of "${parentContext}". ${baseStyle} ${textInstruction}`;
+  return `A professional ${themeName} infographic illustration, titled "${regionName}". The composition features an isometric perspective with ${modifier}. Mark key knowledge points and important areas with clear annotation labels and pointer lines, highlighting key information about ${regionDescription}. In the blank areas of the image, arrange a series of concise knowledge point summaries in an organized manner. This is part of "${parentContext}". ${infographicStyle} ${baseStyle} ${textInstruction}`;
 }
 
 // 图像分析提示词构建

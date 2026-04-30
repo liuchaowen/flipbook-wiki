@@ -141,17 +141,18 @@ async function imageGenerationCall(
 }
 
 // 图像生成（主函数）- 使用 multimodal-generation API
-export async function generateImage(prompt: string, size?: string): Promise<{
+export async function generateImage(prompt: string, size?: string, locale?: string): Promise<{
   success: boolean;
   imageUrl?: string;
   revisedPrompt?: string;
   error?: string;
 }> {
   try {
-    const enhancedPrompt = buildInfographicPrompt(prompt);
+    const enhancedPrompt = buildInfographicPrompt(prompt, { language: locale });
 
     console.log('--- 正在提交文生图任务 ---');
     console.log('使用 qwen-image-2.0-pro 模型...');
+    console.log('用户语言:', locale || 'auto-detect');
     console.log('Prompt:', enhancedPrompt);
     console.log('请求尺寸:', size || '2048*2048');
 
@@ -182,17 +183,19 @@ export async function generateExpandedImage(
   regionDescription: string,
   expandType: string,
   parentContext: string,
-  size?: string
+  size?: string,
+  locale?: string
 ): Promise<{
   success: boolean;
   imageUrl?: string;
   error?: string;
 }> {
   try {
-    const prompt = buildExpandPrompt(regionName, regionDescription, expandType, parentContext);
+    const prompt = buildExpandPrompt(regionName, regionDescription, expandType, parentContext, locale);
 
     console.log('--- 正在提交展开图像任务 ---');
     console.log(`使用 ${IMAGE_MODEL} 模型...`);
+    console.log('用户语言:', locale || 'auto-detect');
     console.log('Prompt:', prompt);
     console.log('请求尺寸:', size || '1024*1024');
 
