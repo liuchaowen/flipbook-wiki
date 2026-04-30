@@ -22,6 +22,9 @@ interface FlipbookState {
   // 导航栏可见性
   headerVisible: boolean;
   
+  // 底部栏可见性
+  footerVisible: boolean;
+  
   // Actions
   setCurrentImage: (image: GeneratedImage | null) => void;
   addToHistory: (node: HistoryNode) => void;
@@ -32,6 +35,7 @@ interface FlipbookState {
   setHoveredRegion: (region: ImageRegion | null) => void;
   updateImageRegions: (imageId: string, regions: ImageRegion[]) => void;
   setHeaderVisible: (visible: boolean) => void;
+  setFooterVisible: (visible: boolean) => void;
 }
 
 export const useFlipbookStore = create<FlipbookState>((set, get) => ({
@@ -43,6 +47,7 @@ export const useFlipbookStore = create<FlipbookState>((set, get) => ({
   loadingMessage: '',
   hoveredRegion: null,
   headerVisible: true,
+  footerVisible: true,
 
   setCurrentImage: (image) => set({ currentImage: image }),
 
@@ -120,4 +125,5 @@ export const useFlipbookStore = create<FlipbookState>((set, get) => ({
   }),
 
   setHeaderVisible: (visible) => set({ headerVisible: visible }),
+  setFooterVisible: (visible) => set({ footerVisible: visible }),
 }));

@@ -19,6 +19,7 @@ export default function FlipbookViewer() {
         loadingMessage,
         hoveredRegion,
         headerVisible,
+        footerVisible,
         setCurrentImage,
         addToHistory,
         pushToStack,
@@ -28,14 +29,16 @@ export default function FlipbookViewer() {
         setHoveredRegion,
         updateImageRegions,
         setHeaderVisible,
+        setFooterVisible,
     } = useFlipbookStore();
 
-    // 初始时显示导航栏，有图片时隐藏
+    // 初始时显示导航栏和底部栏，有图片时隐藏
     useEffect(() => {
         if (!currentImage) {
             setHeaderVisible(true);
+            setFooterVisible(true);
         }
-    }, [currentImage, setHeaderVisible]);
+    }, [currentImage, setHeaderVisible, setFooterVisible]);
 
     // 获取窗口可用尺寸（除去顶部导航栏高度）
     const getAvailableSize = useCallback(() => {
@@ -77,8 +80,9 @@ export default function FlipbookViewer() {
                 addToHistory(historyNode);
                 pushToStack(image.id);
 
-                // 生成图片后隐藏导航栏
+                // 生成图片后隐藏导航栏和底部栏
                 setHeaderVisible(false);
+                setFooterVisible(false);
             } else {
                 console.error('Generation failed:', data.error);
                 alert(data.error || '生成失败，请重试');
@@ -89,7 +93,7 @@ export default function FlipbookViewer() {
         } finally {
             setLoading(false);
         }
-    }, [setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible]);
+    }, [setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible]);
 
     // 处理图像点击
     const handleImageClick = useCallback(async (position: ClickPosition) => {
@@ -172,8 +176,9 @@ export default function FlipbookViewer() {
                 addToHistory(historyNode);
                 pushToStack(image.id);
 
-                // 展开生成新图片后隐藏导航栏
+                // 展开生成新图片后隐藏导航栏和底部栏
                 setHeaderVisible(false);
+                setFooterVisible(false);
             } else {
                 console.error('Expand failed:', data.error);
                 alert(data.error || '展开失败，请重试');
@@ -184,7 +189,7 @@ export default function FlipbookViewer() {
         } finally {
             setLoading(false);
         }
-    }, [currentImage, setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible]);
+    }, [currentImage, setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible]);
 
     // 导航控制
     const handleBack = useCallback(() => {

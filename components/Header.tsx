@@ -63,9 +63,9 @@ export default function Header({
 
     return (
         <>
-            {/* 顶部悬停检测区域 */}
+            {/* 顶部悬停检测区域 - 接近顶部时触发显示 */}
             <div
-                className="fixed top-0 left-0 right-0 h-4 z-50"
+                className="fixed top-0 left-0 right-0 h-16 z-50"
                 onMouseEnter={() => setIsHovering(true)}
             />
 
