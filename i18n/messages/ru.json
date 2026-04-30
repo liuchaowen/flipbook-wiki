@@ -1,0 +1,40 @@
+{
+    "metadata": {
+        "title": "Flipbook - AI Визуальный Исследователь",
+        "description": "Введите любую тему, и ИИ сгенерирует визуальные изображения для вас. Нажмите на любое место изображения, чтобы исследовать больше контента."
+    },
+    "header": {
+        "title": "Flipbook Wiki",
+        "back": "Назад",
+        "forward": "Вперёд",
+        "newExploration": "Новое Исследование",
+        "switchToDark": "Переключить на Тёмный Режим",
+        "switchToLight": "Переключить на Светлый Режим",
+        "switchLanguage": "Сменить Язык"
+    },
+    "footer": {
+        "inspiredBy": "Вдохновлено",
+        "flipbookLink": "flipbook.page"
+    },
+    "promptInput": {
+        "title": "Исследуйте Безграничные Возможности Знаний",
+        "placeholder": "Введите тему, которую хотите исследовать...",
+        "examplePrompts": {
+            "shanghaiTravel": "Путеводитель по Шанхаю",
+            "universeToEarth": "Вид от Вселенной до Земли",
+            "tornadoFormation": "Принцип формирования торнадо",
+            "airbusA380": "Компоненты Airbus A380"
+        },
+        "deleteHistory": "Удалить эту историю"
+    },
+    "flipbookViewer": {
+      "generatingImage": "Генерация визуального изображения...",
+      "expandingRegion": "Исследование выбранной области...",
+      "generationFailed": "Ошибка генерации, попробуйте снова",
+      "networkError": "Ошибка сети, попробуйте снова",
+      "currentTopic": "Текущая Тема"
+    },
+    "languageSwitcher": {
+        "title": "Выбрать Язык"
+    }
+}

@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import CanvasViewer from './CanvasViewer';
 import PromptInput from './PromptInput';
 import Header from './Header';
@@ -10,6 +11,8 @@ import { GeneratedImage, ImageRegion, ClickPosition, HistoryNode } from '@/types
 import { useFlipbookStore } from '@/lib/store';
 
 export default function FlipbookViewer() {
+    const t = useTranslations('flipbookViewer');
+
     const {
         currentImage,
         historyTree,
@@ -50,7 +53,7 @@ export default function FlipbookViewer() {
 
     // 生成图像
     const handleGenerate = useCallback(async (prompt: string) => {
-        setLoading(true, '正在生成可视化图像...');
+        setLoading(true, t('generatingImage'));
 
         try {
             const { width, height } = getAvailableSize();
@@ -85,21 +88,21 @@ export default function FlipbookViewer() {
                 setFooterVisible(false);
             } else {
                 console.error('Generation failed:', data.error);
-                alert(data.error || '生成失败，请重试');
+                alert(data.error || t('generationFailed'));
             }
         } catch (error) {
             console.error('Generation error:', error);
-            alert('网络错误，请重试');
+            alert(t('networkError'));
         } finally {
             setLoading(false);
         }
-    }, [setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible]);
+    }, [setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible, t]);
 
     // 处理图像点击
     const handleImageClick = useCallback(async (position: ClickPosition) => {
         if (!currentImage || isLoading) return;
 
-        setLoading(true, '正在分析点击区域...');
+        setLoading(true, t('expandingRegion'));
 
         try {
             const response = await fetch('/api/analyze', {
@@ -134,13 +137,13 @@ export default function FlipbookViewer() {
         } finally {
             setLoading(false);
         }
-    }, [currentImage, isLoading, setLoading, updateImageRegions]);
+    }, [currentImage, isLoading, setLoading, updateImageRegions, t]);
 
     // 展开区域
     const handleExpand = useCallback(async (region: ImageRegion) => {
         if (!currentImage) return;
 
-        setLoading(true, '正在生成展开视图...');
+        setLoading(true, t('expandingRegion'));
 
         try {
             const { width, height } = getAvailableSize();
@@ -185,15 +188,15 @@ export default function FlipbookViewer() {
                 setFooterVisible(false);
             } else {
                 console.error('Expand failed:', data.error);
-                alert(data.error || '展开失败，请重试');
+                alert(data.error || t('generationFailed'));
             }
         } catch (error) {
             console.error('Expand error:', error);
-            alert('网络错误，请重试');
+            alert(t('networkError'));
         } finally {
             setLoading(false);
         }
-    }, [currentImage, setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible]);
+    }, [currentImage, setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible, setFooterVisible, t]);
 
     // 导航控制
     const handleBack = useCallback(() => {
@@ -269,7 +272,7 @@ export default function FlipbookViewer() {
                                         marginBottom: '4px',
                                     }}
                                 >
-                                    当前主题
+                                    {t('currentTopic')}
                                 </p>
                                 <p
                                     className="text-body"

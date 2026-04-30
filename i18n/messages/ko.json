@@ -1,0 +1,40 @@
+{
+    "metadata": {
+        "title": "Flipbook - AI 비주얼 탐색",
+        "description": "모든 주제를 입력하면 AI가 시각적 이미지를 생성합니다. 이미지의 아무 곳이나 클릭하여 더 많은 콘텐츠를 탐색하세요."
+    },
+    "header": {
+        "title": "Flipbook Wiki",
+        "back": "뒤로",
+        "forward": "앞으로",
+        "newExploration": "새 탐색",
+        "switchToDark": "다크 모드로 전환",
+        "switchToLight": "라이트 모드로 전환",
+        "switchLanguage": "언어 전환"
+    },
+    "footer": {
+        "inspiredBy": "영감을 받은 곳",
+        "flipbookLink": "flipbook.page"
+    },
+    "promptInput": {
+        "title": "지식의 무한한 가능성 탐색",
+        "placeholder": "탐색하고 싶은 주제를 입력하세요...",
+        "examplePrompts": {
+            "shanghaiTravel": "상하이 여행 가이드",
+            "universeToEarth": "우주에서 지구로의 시점",
+            "tornadoFormation": "토네이도 형성 원리",
+            "airbusA380": "에어버스 A380 구성 부품"
+        },
+        "deleteHistory": "이 기록 삭제"
+    },
+    "flipbookViewer": {
+      "generatingImage": "시각적 이미지 생성 중...",
+      "expandingRegion": "선택한 영역 탐색 중...",
+      "generationFailed": "생성 실패, 다시 시도해 주세요",
+      "networkError": "네트워크 오류, 다시 시도해 주세요",
+      "currentTopic": "현재 주제"
+    },
+    "languageSwitcher": {
+        "title": "언어 선택"
+    }
+}

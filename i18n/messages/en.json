@@ -1,0 +1,40 @@
+{
+    "metadata": {
+        "title": "Flipbook - AI Visual Explorer",
+        "description": "Enter any topic and AI will generate visual images for you. Click anywhere on the image to explore more content."
+    },
+    "header": {
+        "title": "Flipbook Wiki",
+        "back": "Back",
+        "forward": "Forward",
+        "newExploration": "New Exploration",
+        "switchToDark": "Switch to Dark Mode",
+        "switchToLight": "Switch to Light Mode",
+        "switchLanguage": "Switch Language"
+    },
+    "footer": {
+        "inspiredBy": "Inspired by",
+        "flipbookLink": "flipbook.page"
+    },
+    "promptInput": {
+        "title": "Explore the Infinite Possibilities of Knowledge",
+        "placeholder": "Enter the topic you want to explore...",
+        "examplePrompts": {
+            "shanghaiTravel": "Shanghai Travel Guide",
+            "universeToEarth": "View from Universe to Earth",
+            "tornadoFormation": "Tornado Formation Principles",
+            "airbusA380": "Airbus A380 Components"
+        },
+        "deleteHistory": "Delete this history"
+    },
+    "flipbookViewer": {
+      "generatingImage": "Generating visual image...",
+      "expandingRegion": "Exploring selected region...",
+      "generationFailed": "Generation failed, please try again",
+      "networkError": "Network error, please try again",
+      "currentTopic": "Current Topic"
+    },
+    "languageSwitcher": {
+        "title": "Select Language"
+    }
+}

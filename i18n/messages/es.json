@@ -1,0 +1,40 @@
+{
+    "metadata": {
+        "title": "Flipbook - Explorador Visual AI",
+        "description": "Ingresa cualquier tema y la IA generará imágenes visuales para ti. Haz clic en cualquier parte de la imagen para explorar más contenido."
+    },
+    "header": {
+        "title": "Flipbook Wiki",
+        "back": "Atrás",
+        "forward": "Adelante",
+        "newExploration": "Nueva Exploración",
+        "switchToDark": "Cambiar a Modo Oscuro",
+        "switchToLight": "Cambiar a Modo Claro",
+        "switchLanguage": "Cambiar Idioma"
+    },
+    "footer": {
+        "inspiredBy": "Inspirado por",
+        "flipbookLink": "flipbook.page"
+    },
+    "promptInput": {
+        "title": "Explora las Posibilidades Infinitas del Conocimiento",
+        "placeholder": "Ingresa el tema que quieres explorar...",
+        "examplePrompts": {
+            "shanghaiTravel": "Guía de Viaje a Shanghái",
+            "universeToEarth": "Vista del Universo a la Tierra",
+            "tornadoFormation": "Principio de Formación de Tornados",
+            "airbusA380": "Componentes del Airbus A380"
+        },
+        "deleteHistory": "Eliminar este historial"
+    },
+    "flipbookViewer": {
+      "generatingImage": "Generando imagen visual...",
+      "expandingRegion": "Explorando región seleccionada...",
+      "generationFailed": "Generación fallida, por favor intenta de nuevo",
+      "networkError": "Error de red, por favor intenta de nuevo",
+      "currentTopic": "Tema Actual"
+    },
+    "languageSwitcher": {
+        "title": "Seleccionar Idioma"
+    }
+}

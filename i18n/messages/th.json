@@ -1,0 +1,40 @@
+{
+    "metadata": {
+        "title": "Flipbook - สำรวจภาพด้วย AI",
+        "description": "ป้อนหัวข้อใดก็ได้และ AI จะสร้างภาพประกอบให้คุณ คลิกที่ใดก็ได้บนภาพเพื่อสำรวจเนื้อหาเพิ่มเติม"
+    },
+    "header": {
+        "title": "Flipbook Wiki",
+        "back": "ย้อนกลับ",
+        "forward": "ไปข้างหน้า",
+        "newExploration": "สำรวจใหม่",
+        "switchToDark": "เปลี่ยนเป็นโหมดมืด",
+        "switchToLight": "เปลี่ยนเป็นโหมดสว่าง",
+        "switchLanguage": "เปลี่ยนภาษา"
+    },
+    "footer": {
+        "inspiredBy": "ได้รับแรงบันดาลใจจาก",
+        "flipbookLink": "flipbook.page"
+    },
+    "promptInput": {
+        "title": "สำรวจความเป็นไปได้ไม่รู้จบของความรู้",
+        "placeholder": "ป้อนหัวข้อที่คุณต้องการสำรวจ...",
+        "examplePrompts": {
+            "shanghaiTravel": "คู่มือท่องเที่ยวเซี่ยงไฮ้",
+            "universeToEarth": "มุมมองจากจักรวาลสู่โลก",
+            "tornadoFormation": "หลักการก่อตัวของทอร์นาโด",
+            "airbusA380": "ส่วนประกอบของแอร์บัส A380"
+        },
+        "deleteHistory": "ลบประวัติการค้นหานี้"
+    },
+    "flipbookViewer": {
+      "generatingImage": "กำลังสร้างภาพประกอบ...",
+      "expandingRegion": "กำลังสำรวจพื้นที่ที่เลือก...",
+      "generationFailed": "การสร้างล้มเหลว โปรดลองอีกครั้ง",
+      "networkError": "ข้อผิดพลาดของเครือข่าย โปรดลองอีกครั้ง",
+      "currentTopic": "หัวข้อปัจจุบัน"
+    },
+    "languageSwitcher": {
+        "title": "เลือกภาษา"
+    }
+}

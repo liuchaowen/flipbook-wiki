@@ -369,7 +369,7 @@ body {
 /* Icon Button - 圆形线条风格 */
 .btn-icon {
   background: transparent;
-  border: 2px solid var(--color-ink-muted);
+  border: 1px solid var(--color-ink-muted);
   border-radius: var(--radius-full);
   width: 44px;
   height: 44px;

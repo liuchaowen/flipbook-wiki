@@ -1,0 +1,40 @@
+{
+    "metadata": {
+        "title": "Flipbook - AI 視覺化探索",
+        "description": "輸入任何主題，AI 將為你生成視覺化圖像。點擊圖像中的任意區域，深入探索更多內容。"
+    },
+    "header": {
+        "title": "Flipbook Wiki",
+        "back": "後退",
+        "forward": "前進",
+        "newExploration": "新建探索",
+        "switchToDark": "切換到暗色模式",
+        "switchToLight": "切換到亮色模式",
+        "switchLanguage": "切換語言"
+    },
+    "footer": {
+        "inspiredBy": "靈感來自",
+        "flipbookLink": "flipbook.page"
+    },
+    "promptInput": {
+        "title": "探索知識的無限可能",
+        "placeholder": "輸入你想探索的主題...",
+        "examplePrompts": {
+            "shanghaiTravel": "上海旅遊攻略",
+            "universeToEarth": "宇宙到地球的視角",
+            "tornadoFormation": "龍捲風形成原理",
+            "airbusA380": "空客A380部件組成"
+        },
+        "deleteHistory": "刪除此歷史記錄"
+    },
+    "flipbookViewer": {
+      "generatingImage": "正在生成視覺化圖像...",
+      "expandingRegion": "正在探索選中區域...",
+      "generationFailed": "生成失敗，請重試",
+      "networkError": "網絡錯誤，請重試",
+      "currentTopic": "當前主題"
+    },
+    "languageSwitcher": {
+        "title": "選擇語言"
+    }
+}

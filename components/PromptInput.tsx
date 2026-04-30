@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Search, Loader2, ArrowUp } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
+import { type Locale } from '@/i18n/config';
 
 interface PromptInputProps {
     onSubmit: (prompt: string) => void;
@@ -15,6 +17,9 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
     const [history, setHistory] = useState<string[]>([]);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
     const [isFocused, setIsFocused] = useState(false);
+
+    const t = useTranslations('promptInput');
+    const locale = useLocale() as Locale;
 
     // 从 localStorage 加载历史记录
     useEffect(() => {
@@ -56,13 +61,17 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
         });
     };
 
-    const EXAMPLE_PROMPTS = [
-        '中国旅游攻略',
-        '宇宙到地球的视角',
-        '五一广州两日游指南',
-        '极端气候形成演变',
-        '歼20战斗机组成'
-    ];
+    // 根据语言获取示例提示词
+    const getExamplePrompts = () => {
+        return [
+            t('examplePrompts.shanghaiTravel'),
+            t('examplePrompts.universeToEarth'),
+            t('examplePrompts.tornadoFormation'),
+            t('examplePrompts.airbusA380'),
+        ];
+    };
+
+    const EXAMPLE_PROMPTS = getExamplePrompts();
 
     // 如果有历史记录，显示历史记录；否则显示示例
     const displayPrompts = history.length > 0 ? history : EXAMPLE_PROMPTS;
@@ -81,7 +90,7 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
                         letterSpacing: '-0.02em',
                     }}
                 >
-                    探索知识的无限可能
+                    {t('title')}
                 </h1>
             </div>
 
@@ -105,7 +114,7 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
                             type="text"
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
-                            placeholder="输入你想探索的主题..."
+                            placeholder={t('placeholder')}
                             disabled={isLoading}
                             className="w-full bg-transparent focus:outline-none"
                             style={{
@@ -200,7 +209,7 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
                                                 color: 'var(--color-ink-light)',
                                                 background: 'transparent',
                                             }}
-                                            title="删除此历史记录"
+                                            title={t('deleteHistory')}
                                         >
                                             <svg
                                                 className="w-3.5 h-3.5"

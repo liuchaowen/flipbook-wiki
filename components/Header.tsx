@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useFlipbookStore } from '@/lib/store';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations, useLocale } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
+import { locales, localeNames, localeFlags, type Locale } from '@/i18n/config';
 
 interface HeaderProps {
     showNavigation?: boolean;
@@ -29,6 +32,12 @@ export default function Header({
     const [isHovering, setIsHovering] = useState(false);
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [mounted, setMounted] = useState(false);
+    const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+
+    const t = useTranslations('header');
+    const locale = useLocale() as Locale;
+    const router = useRouter();
+    const pathname = usePathname();
 
     // 初始化主题
     useEffect(() => {
@@ -51,6 +60,16 @@ export default function Header({
         localStorage.setItem('theme', newTheme);
     };
 
+    // 切换语言
+    const switchLanguage = (newLocale: Locale) => {
+        // 获取当前路径并替换语言前缀
+        const currentPath = pathname;
+        const pathWithoutLocale = currentPath.replace(`/${locale}`, '') || '/';
+        const newPath = `/${newLocale}${pathWithoutLocale}`;
+        router.push(newPath);
+        setShowLanguageMenu(false);
+    };
+
     // 当 headerVisible 变化时，重置 hover 状态
     useEffect(() => {
         setIsHovering(false);
@@ -68,6 +87,21 @@ export default function Header({
         window.addEventListener('mousemove', handleMouseMove);
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
+
+    // 点击外部关闭语言菜单
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (showLanguageMenu) {
+                const target = e.target as HTMLElement;
+                if (!target.closest('.language-menu-container')) {
+                    setShowLanguageMenu(false);
+                }
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [showLanguageMenu]);
 
     // 显示条件：store 中可见 或 鼠标悬停在顶部区域
     const showHeader = headerVisible || isHovering;
@@ -99,7 +133,7 @@ export default function Header({
                                     letterSpacing: '-0.01em',
                                 }}
                             >
-                                <a href="/">Flipbook Wiki</a>
+                                <a href={`/${locale}`}>{t('title')}</a>
                             </h1>
 
                             {/* 中间导航按钮 - 圆形线条图标按钮 */}
@@ -113,7 +147,7 @@ export default function Header({
                                             opacity: canGoBack ? 1 : 0.3,
                                             cursor: canGoBack ? 'pointer' : 'not-allowed',
                                         }}
-                                        title="后退"
+                                        title={t('back')}
                                     >
                                         <svg
                                             className="w-5 h-5"
@@ -137,7 +171,7 @@ export default function Header({
                                             opacity: canGoForward ? 1 : 0.3,
                                             cursor: canGoForward ? 'pointer' : 'not-allowed',
                                         }}
-                                        title="前进"
+                                        title={t('forward')}
                                     >
                                         <svg
                                             className="w-5 h-5"
@@ -177,15 +211,68 @@ export default function Header({
                                             fontSize: '14px',
                                         }}
                                     >
-                                        新建探索
+                                        {t('newExploration')}
                                     </button>
                                 )}
+
+                                {/* 语言切换按钮 */}
+                                {mounted && (
+                                    <div className="relative language-menu-container">
+                                        <button
+                                            onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                                            className="btn-icon"
+                                            title={t('switchLanguage')}
+                                            style={{
+                                                padding: '8px',
+                                                minWidth: 'auto',
+                                            }}
+                                        >
+                                            <span style={{ fontSize: '20px' }}>{localeFlags[locale]}</span>
+                                        </button>
+
+                                        {/* 语言选择下拉菜单 */}
+                                        <AnimatePresence>
+                                            {showLanguageMenu && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: -10 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="absolute right-0 top-full mt-2 py-2 rounded-lg shadow-lg"
+                                                    style={{
+                                                        background: 'var(--color-white)',
+                                                        border: '1px solid var(--color-border)',
+                                                        minWidth: '160px',
+                                                        zIndex: 50,
+                                                    }}
+                                                >
+                                                    {locales.map((loc) => (
+                                                        <button
+                                                            key={loc}
+                                                            onClick={() => switchLanguage(loc)}
+                                                            className="w-full px-4 py-2 flex items-center gap-3 transition-colors"
+                                                            style={{
+                                                                background: loc === locale ? 'var(--color-primary-beige)' : 'transparent',
+                                                                color: 'var(--color-ink)',
+                                                                fontSize: '14px',
+                                                            }}
+                                                        >
+                                                            <span style={{ fontSize: '18px' }}>{localeFlags[loc]}</span>
+                                                            <span>{localeNames[loc]}</span>
+                                                        </button>
+                                                    ))}
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                )}
+
                                 {/* 主题切换按钮 */}
                                 {mounted && (
                                     <button
                                         onClick={toggleTheme}
                                         className="btn-icon"
-                                        title={theme === 'light' ? '切换到暗色模式' : '切换到亮色模式'}
+                                        title={theme === 'light' ? t('switchToDark') : t('switchToLight')}
                                     >
                                         {theme === 'light' ? (
                                             <svg
