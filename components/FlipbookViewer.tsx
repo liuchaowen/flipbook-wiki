@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CanvasViewer from './CanvasViewer';
 import PromptInput from './PromptInput';
+import Header from './Header';
+import Footer from './Footer';
 import { GeneratedImage, ImageRegion, ClickPosition, HistoryNode } from '@/types';
 import { useFlipbookStore } from '@/lib/store';
 
@@ -16,6 +18,7 @@ export default function FlipbookViewer() {
         isLoading,
         loadingMessage,
         hoveredRegion,
+        headerVisible,
         setCurrentImage,
         addToHistory,
         pushToStack,
@@ -24,7 +27,15 @@ export default function FlipbookViewer() {
         setLoading,
         setHoveredRegion,
         updateImageRegions,
+        setHeaderVisible,
     } = useFlipbookStore();
+
+    // 初始时显示导航栏，有图片时隐藏
+    useEffect(() => {
+        if (!currentImage) {
+            setHeaderVisible(true);
+        }
+    }, [currentImage, setHeaderVisible]);
 
     // 获取窗口可用尺寸（除去顶部导航栏高度）
     const getAvailableSize = useCallback(() => {
@@ -65,6 +76,9 @@ export default function FlipbookViewer() {
                 };
                 addToHistory(historyNode);
                 pushToStack(image.id);
+
+                // 生成图片后隐藏导航栏
+                setHeaderVisible(false);
             } else {
                 console.error('Generation failed:', data.error);
                 alert(data.error || '生成失败，请重试');
@@ -75,7 +89,7 @@ export default function FlipbookViewer() {
         } finally {
             setLoading(false);
         }
-    }, [setLoading, setCurrentImage, addToHistory, pushToStack]);
+    }, [setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible]);
 
     // 处理图像点击
     const handleImageClick = useCallback(async (position: ClickPosition) => {
@@ -157,6 +171,9 @@ export default function FlipbookViewer() {
                 };
                 addToHistory(historyNode);
                 pushToStack(image.id);
+
+                // 展开生成新图片后隐藏导航栏
+                setHeaderVisible(false);
             } else {
                 console.error('Expand failed:', data.error);
                 alert(data.error || '展开失败，请重试');
@@ -167,7 +184,7 @@ export default function FlipbookViewer() {
         } finally {
             setLoading(false);
         }
-    }, [currentImage, setLoading, setCurrentImage, addToHistory, pushToStack]);
+    }, [currentImage, setLoading, setCurrentImage, addToHistory, pushToStack, setHeaderVisible]);
 
     // 导航控制
     const handleBack = useCallback(() => {
@@ -189,95 +206,17 @@ export default function FlipbookViewer() {
                 color: 'var(--ink-black)',
             }}
         >
-            {/* 顶部导航栏 - Airbnb 风格 */}
-            <header
-                className="flex items-center justify-between px-6 py-4"
-                style={{
-                    height: '80px',
-                    borderBottom: '1px solid var(--hairline-gray)',
-                    background: 'var(--canvas-white)',
-                }}
-            >
-                <div className="flex items-center gap-4">
-                    {/* Logo - Rausch 品牌色 */}
-                    <h1
-                        className="font-bold"
-                        style={{
-                            fontSize: '20px',
-                            fontWeight: 600,
-                            color: 'var(--rausch)',
-                            letterSpacing: '-0.018em',
-                        }}
-                    >
-                        Flipbook.wiki
-                    </h1>
-                </div>
-
-                {/* 中间导航按钮 - 圆形图标按钮 */}
-                {currentImage && (
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={handleBack}
-                            disabled={!canGoBack}
-                            className="flex items-center justify-center transition-all"
-                            style={{
-                                width: '44px',
-                                height: '44px',
-                                borderRadius: '50%',
-                                background: 'var(--soft-cloud)',
-                                border: 'none',
-                                cursor: canGoBack ? 'pointer' : 'not-allowed',
-                                opacity: canGoBack ? 1 : 0.3,
-                            }}
-                            title="后退"
-                        >
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="var(--ink-black)"
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                        <button
-                            onClick={handleForward}
-                            disabled={!canGoForward}
-                            className="flex items-center justify-center transition-all"
-                            style={{
-                                width: '44px',
-                                height: '44px',
-                                borderRadius: '50%',
-                                background: 'var(--soft-cloud)',
-                                border: 'none',
-                                cursor: canGoForward ? 'pointer' : 'not-allowed',
-                                opacity: canGoForward ? 1 : 0.3,
-                            }}
-                            title="前进"
-                        >
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="var(--ink-black)"
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
-                        <span
-                            className="ml-2"
-                            style={{
-                                color: 'var(--ash-gray)',
-                                fontSize: '14px',
-                                fontWeight: 500,
-                            }}
-                        >
-                            {currentIndex + 1} / {navigationStack.length}
-                        </span>
-                    </div>
-                )}
-
-            </header>
+            {/* 可自动隐藏的顶部导航栏 */}
+            <Header
+                showNavigation={!!currentImage}
+                currentIndex={currentIndex}
+                totalItems={navigationStack.length}
+                canGoBack={canGoBack}
+                canGoForward={canGoForward}
+                onBack={handleBack}
+                onForward={handleForward}
+                onNew={() => setCurrentImage(null)}
+            />
 
             {/* 主内容区 */}
             <main className="flex-1 flex flex-col overflow-hidden">
@@ -332,26 +271,6 @@ export default function FlipbookViewer() {
                                 </p>
                             </div>
 
-                            {/* 新建按钮 - Secondary 按钮风格 */}
-                            <button
-                                onClick={() => setCurrentImage(null)}
-                                className="transition-all"
-                                style={{
-                                    position: 'absolute',
-                                    top: '16px',
-                                    right: '16px',
-                                    background: 'var(--canvas-white)',
-                                    color: 'var(--ink-black)',
-                                    fontSize: '14px',
-                                    fontWeight: 500,
-                                    padding: '10px 16px',
-                                    borderRadius: '20px',
-                                    border: '1px solid var(--hairline-gray)',
-                                    cursor: 'pointer',
-                                }}
-                            >
-                                新建探索
-                            </button>
                         </motion.div>
                     ) : (
                         <motion.div
@@ -367,6 +286,9 @@ export default function FlipbookViewer() {
                     )}
                 </AnimatePresence>
             </main>
+
+            {/* 底部信息栏 */}
+            <Footer />
 
         </div>
     );

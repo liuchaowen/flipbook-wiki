@@ -1,20 +1,57 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface PromptInputProps {
     onSubmit: (prompt: string) => void;
     isLoading?: boolean;
 }
 
+const HISTORY_STORAGE_KEY = 'flipbook-prompt-history';
+
 export default function PromptInput({ onSubmit, isLoading = false }: PromptInputProps) {
     const [prompt, setPrompt] = useState('');
+    const [history, setHistory] = useState<string[]>([]);
+    const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+
+    // 从 localStorage 加载历史记录
+    useEffect(() => {
+        const saved = localStorage.getItem(HISTORY_STORAGE_KEY);
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) {
+                    setHistory(parsed);
+                }
+            } catch {
+                // 忽略解析错误
+            }
+        }
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (prompt.trim() && !isLoading) {
-            onSubmit(prompt.trim());
+            const trimmedPrompt = prompt.trim();
+            onSubmit(trimmedPrompt);
+
+            // 添加到历史记录（避免重复）
+            setHistory(prev => {
+                const newHistory = [trimmedPrompt, ...prev.filter(item => item !== trimmedPrompt)].slice(0, 5);
+                localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(newHistory));
+                return newHistory;
+            });
         }
+    };
+
+    // 删除单条历史记录
+    const handleDeleteHistoryItem = (itemToDelete: string, e: React.MouseEvent) => {
+        e.stopPropagation(); // 阻止触发标签的点击事件
+        setHistory(prev => {
+            const newHistory = prev.filter(item => item !== itemToDelete);
+            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(newHistory));
+            return newHistory;
+        });
     };
 
     const EXAMPLE_PROMPTS = [
@@ -25,6 +62,10 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
         '歼20战斗机组成'
     ];
 
+    // 如果有历史记录，显示历史记录；否则显示示例
+    const displayPrompts = history.length > 0 ? history : EXAMPLE_PROMPTS;
+    const isHistoryMode = history.length > 0;
+
     return (
         <div className="w-full max-w-3xl mx-auto">
             {/* 标题区域 */}
@@ -32,9 +73,6 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
                 <h1 className="text-2xl font-bold text-[var(--ink-black)] mb-2" style={{ fontSize: '28px', fontWeight: 700 }}>
                     探索知识的无限可能
                 </h1>
-                <p className="text-[var(--ash-gray)]" style={{ fontSize: '16px', fontWeight: 500 }}>
-                    输入主题，AI 将为你生成可视化探索之旅
-                </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -108,24 +146,57 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
                     </button>
                 </div>
 
-                {/* 示例提示词 - Pill 按钮样式 */}
+                {/* 提示词 - Pill 按钮样式 */}
                 <div className="space-y-3">
                     <div className="flex flex-wrap gap-2">
-                        {EXAMPLE_PROMPTS.map((example) => (
-                            <button
-                                key={example}
-                                type="button"
-                                onClick={() => setPrompt(example)}
-                                disabled={isLoading}
-                                className="px-4 py-2 bg-[var(--canvas-white)] border border-[var(--hairline-gray)] text-[var(--ink-black)] transition-all hover:border-[var(--ink-black)] disabled:opacity-50 disabled:cursor-not-allowed"
-                                style={{
-                                    fontSize: '14px',
-                                    fontWeight: 500,
-                                    borderRadius: '20px',
-                                }}
+                        {displayPrompts.map((item) => (
+                            <div
+                                key={item}
+                                className="relative"
+                                onMouseEnter={() => isHistoryMode && setHoveredItem(item)}
+                                onMouseLeave={() => setHoveredItem(null)}
                             >
-                                {example}
-                            </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setPrompt(item)}
+                                    disabled={isLoading}
+                                    className="px-4 py-2 bg-[var(--canvas-white)] border border-[var(--hairline-gray)] text-[var(--ink-black)] transition-all hover:border-[var(--ink-black)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    style={{
+                                        fontSize: '14px',
+                                        fontWeight: 500,
+                                        borderRadius: '20px',
+                                        paddingRight: isHistoryMode && hoveredItem === item ? '32px' : undefined,
+                                    }}
+                                >
+                                    {item}
+                                </button>
+                                {/* 历史记录删除按钮 */}
+                                {isHistoryMode && hoveredItem === item && (
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handleDeleteHistoryItem(item, e)}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-5 h-5 rounded-full hover:bg-[var(--soft-cloud)] transition-colors"
+                                        style={{
+                                            color: 'var(--ash-gray)',
+                                        }}
+                                        title="删除此历史记录"
+                                    >
+                                        <svg
+                                            className="w-3.5 h-3.5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M6 18L18 6M6 6l12 12"
+                                            />
+                                        </svg>
+                                    </button>
+                                )}
+                            </div>
                         ))}
                     </div>
                 </div>

@@ -56,16 +56,18 @@ export default function CanvasViewer({
         const img = e.currentTarget;
         setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
 
-        // 计算适应容器的缩放比例，考虑顶部导航栏高度
+        // 计算填充容器的缩放比例，让图片完全填充可用区域
         if (containerRef.current) {
             const containerRect = containerRef.current.getBoundingClientRect();
-            // 使用实际可视高度，减去导航栏高度和底部边距
-            const availableHeight = window.innerHeight - 80 - 32; // 80px 导航栏 + 32px 底部边距
-            const availableWidth = containerRect.width - 32; // 左右边距
+            // 使用实际可视高度，减去导航栏高度
+            const availableHeight = window.innerHeight - 80; // 80px 导航栏
+            const availableWidth = containerRect.width;
 
+            // 计算缩放比例，让图片完全填充容器（cover 模式）
             const scaleX = availableWidth / img.naturalWidth;
             const scaleY = availableHeight / img.naturalHeight;
-            const fitScale = Math.min(scaleX, scaleY, 1); // 不超过原始大小
+            // 使用较大的缩放比例，确保图片完全填充容器
+            const fitScale = Math.max(scaleX, scaleY);
             setScale(fitScale);
         }
     };
@@ -171,10 +173,10 @@ export default function CanvasViewer({
             className="relative w-full h-full overflow-hidden"
             style={{ background: 'var(--soft-cloud)' }}
         >
-            {/* 图片容器 */}
+            {/* 图片容器 - 填充整个区域 */}
             <div
                 ref={containerRef}
-                className="w-full h-full flex items-center justify-center cursor-crosshair"
+                className="w-full h-full flex items-start justify-start"
                 onClick={handleClick}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -184,6 +186,7 @@ export default function CanvasViewer({
                 <motion.div
                     style={{
                         transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+                        transformOrigin: 'top left',
                     }}
                     className="relative"
                 >
@@ -191,8 +194,8 @@ export default function CanvasViewer({
                         ref={imageRef}
                         src={imageUrl}
                         alt="Generated visualization"
-                        className="max-w-none select-none"
-                        style={{ borderRadius: '14px' }}
+                        className="block select-none"
+                        style={{ borderRadius: '0' }}
                         onLoad={handleImageLoad}
                         draggable={false}
                     />
@@ -226,11 +229,11 @@ export default function CanvasViewer({
                                 style={{
                                     left: `${ripplePosition.x}%`,
                                     top: `${ripplePosition.y}%`,
-                                    transform: 'translate(-50%, -50%)',
                                 }}
                             >
                                 {/* 外圈涟漪 */}
                                 <motion.div
+                                    className="absolute"
                                     initial={{ scale: 0, opacity: 0.6 }}
                                     animate={{
                                         scale: isLoading ? [0, 2.5] : [2.5, 3],
@@ -248,6 +251,8 @@ export default function CanvasViewer({
                                         borderRadius: '50%',
                                         border: '2px solid var(--rausch)',
                                         background: 'rgba(255, 56, 92, 0.1)',
+                                        left: '-50px',
+                                        top: '-50px',
                                     }}
                                 />
                                 {/* 中圈涟漪 */}
@@ -271,9 +276,8 @@ export default function CanvasViewer({
                                         borderRadius: '50%',
                                         border: '2px solid var(--rausch)',
                                         background: 'rgba(255, 56, 92, 0.05)',
-                                        left: 0,
-                                        top: 0,
-                                        transform: 'translate(-50%, -50%)',
+                                        left: '-50px',
+                                        top: '-50px',
                                     }}
                                 />
                                 {/* 内圈涟漪 */}
@@ -297,9 +301,8 @@ export default function CanvasViewer({
                                         borderRadius: '50%',
                                         border: '2px solid var(--rausch)',
                                         background: 'rgba(255, 56, 92, 0.08)',
-                                        left: 0,
-                                        top: 0,
-                                        transform: 'translate(-50%, -50%)',
+                                        left: '-50px',
+                                        top: '-50px',
                                     }}
                                 />
                                 {/* 中心点 */}
@@ -320,9 +323,8 @@ export default function CanvasViewer({
                                         height: '12px',
                                         borderRadius: '50%',
                                         background: 'var(--rausch)',
-                                        left: 0,
-                                        top: 0,
-                                        transform: 'translate(-50%, -50%)',
+                                        left: '-6px',
+                                        top: '-6px',
                                     }}
                                 />
                             </motion.div>
