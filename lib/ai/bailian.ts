@@ -181,7 +181,8 @@ export async function generateExpandedImage(
   regionName: string,
   regionDescription: string,
   expandType: string,
-  parentContext: string
+  parentContext: string,
+  size?: string
 ): Promise<{
   success: boolean;
   imageUrl?: string;
@@ -193,9 +194,10 @@ export async function generateExpandedImage(
     console.log('--- 正在提交展开图像任务 ---');
     console.log(`使用 ${IMAGE_MODEL} 模型...`);
     console.log('Prompt:', prompt);
+    console.log('请求尺寸:', size || '1024*1024');
 
     const imageUrl = await imageGenerationCall(prompt, {
-      size: '2048*2048',
+      size: size || '1024*1024',
     });
 
     console.log('生成成功！图片地址：');

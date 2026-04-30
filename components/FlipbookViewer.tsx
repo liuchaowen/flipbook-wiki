@@ -143,6 +143,7 @@ export default function FlipbookViewer() {
         setLoading(true, '正在生成展开视图...');
 
         try {
+            const { width, height } = getAvailableSize();
             const response = await fetch('/api/expand', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -153,6 +154,8 @@ export default function FlipbookViewer() {
                     regionDescription: region.description,
                     expandType: 'detail',
                     parentContext: currentImage.prompt,
+                    width,
+                    height,
                 }),
             });
 
