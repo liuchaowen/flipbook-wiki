@@ -65,7 +65,7 @@ function getLocaleFromCountry(countryCode: string): Locale {
   return countryToLocale[countryCode] || defaultLocale;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
   // 检查路径是否已经包含语言前缀

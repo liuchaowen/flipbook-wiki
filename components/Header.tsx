@@ -39,16 +39,17 @@ export default function Header({
     const router = useRouter();
     const pathname = usePathname();
 
-    // 初始化主题
+    // 初始化主题 - 默认使用明主题
     useEffect(() => {
         setMounted(true);
         const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
         if (savedTheme) {
             setTheme(savedTheme);
             document.documentElement.setAttribute('data-theme', savedTheme);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            setTheme('dark');
-            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            // 默认使用明主题
+            setTheme('light');
+            document.documentElement.setAttribute('data-theme', 'light');
         }
     }, []);
 
