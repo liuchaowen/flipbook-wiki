@@ -38,7 +38,7 @@ export default function CanvasViewer({
             if (containerRef.current) {
                 const rect = containerRef.current.getBoundingClientRect();
                 // 确保高度不超过可视区域
-                const maxHeight = window.innerHeight - 80; // 减去顶部导航栏高度
+                const maxHeight = window.innerHeight - 72; // 减去顶部导航栏高度
                 setContainerSize({
                     width: rect.width,
                     height: Math.min(rect.height, maxHeight)
@@ -60,7 +60,7 @@ export default function CanvasViewer({
         if (containerRef.current) {
             const containerRect = containerRef.current.getBoundingClientRect();
             // 使用实际可视高度，减去导航栏高度
-            const availableHeight = window.innerHeight - 80; // 80px 导航栏
+            const availableHeight = window.innerHeight - 72; // 72px 导航栏
             const availableWidth = containerRect.width;
 
             // 计算缩放比例，让图片完全填充容器（cover 模式）
@@ -171,7 +171,7 @@ export default function CanvasViewer({
     return (
         <div
             className="relative w-full h-full overflow-hidden"
-            style={{ background: 'var(--soft-cloud)' }}
+            style={{ background: 'var(--color-primary-beige)' }}
         >
             {/* 图片容器 - 填充整个区域 */}
             <div
@@ -195,33 +195,36 @@ export default function CanvasViewer({
                         src={imageUrl}
                         alt="Generated visualization"
                         className="block select-none"
-                        style={{ borderRadius: '0' }}
+                        style={{ 
+                            borderRadius: '0',
+                            border: '2px solid var(--color-ink-muted)',
+                        }}
                         onLoad={handleImageLoad}
                         draggable={false}
                     />
 
-                    {/* 区域高亮 - Airbnb 风格 */}
+                    {/* 区域高亮 - 线条艺术风格 */}
                     {regions.map((region) => (
                         <div
                             key={region.id}
-                            className="absolute pointer-events-none transition-all duration-200"
+                            className="absolute pointer-events-none transition-all duration-300"
                             style={{
                                 left: `${region.bounds.x}%`,
                                 top: `${region.bounds.y}%`,
                                 width: `${region.bounds.width}%`,
                                 height: `${region.bounds.height}%`,
                                 background: hoveredRegion?.id === region.id
-                                    ? 'rgba(255, 56, 92, 0.15)'
+                                    ? 'rgba(126, 184, 218, 0.15)'
                                     : 'transparent',
                                 border: hoveredRegion?.id === region.id
-                                    ? '2px solid var(--rausch)'
-                                    : '1px solid transparent',
-                                borderRadius: '8px',
+                                    ? '2px solid var(--color-primary-blue)'
+                                    : '2px solid transparent',
+                                borderRadius: '12px',
                             }}
                         />
                     ))}
 
-                    {/* 水波涟漪效果 - 在图片内部 */}
+                    {/* 水波涟漪效果 - 天际蓝线条艺术风格 */}
                     <AnimatePresence>
                         {ripplePosition && (
                             <motion.div
@@ -249,8 +252,8 @@ export default function CanvasViewer({
                                         width: '100px',
                                         height: '100px',
                                         borderRadius: '50%',
-                                        border: '2px solid var(--rausch)',
-                                        background: 'rgba(255, 56, 92, 0.1)',
+                                        border: '2px solid var(--color-primary-blue)',
+                                        background: 'rgba(126, 184, 218, 0.1)',
                                         left: '-50px',
                                         top: '-50px',
                                     }}
@@ -274,8 +277,8 @@ export default function CanvasViewer({
                                         width: '100px',
                                         height: '100px',
                                         borderRadius: '50%',
-                                        border: '2px solid var(--rausch)',
-                                        background: 'rgba(255, 56, 92, 0.05)',
+                                        border: '2px solid var(--color-primary-green)',
+                                        background: 'rgba(168, 213, 186, 0.05)',
                                         left: '-50px',
                                         top: '-50px',
                                     }}
@@ -299,8 +302,8 @@ export default function CanvasViewer({
                                         width: '100px',
                                         height: '100px',
                                         borderRadius: '50%',
-                                        border: '2px solid var(--rausch)',
-                                        background: 'rgba(255, 56, 92, 0.08)',
+                                        border: '2px solid var(--color-pastel-lavender)',
+                                        background: 'rgba(212, 196, 224, 0.08)',
                                         left: '-50px',
                                         top: '-50px',
                                     }}
@@ -322,7 +325,8 @@ export default function CanvasViewer({
                                         width: '12px',
                                         height: '12px',
                                         borderRadius: '50%',
-                                        background: 'var(--rausch)',
+                                        background: 'var(--color-primary-blue)',
+                                        border: '2px solid var(--color-ink)',
                                         left: '-6px',
                                         top: '-6px',
                                     }}
@@ -333,30 +337,31 @@ export default function CanvasViewer({
                 </motion.div>
             </div>
 
-            {/* 缩放控制 - 圆形图标按钮 */}
+            {/* 缩放控制 - 线条艺术风格圆形按钮 */}
             <div
                 className="absolute bottom-4 right-4 flex gap-2"
             >
                 <button
                     onClick={handleZoomOut}
-                    className="flex items-center justify-center transition-all"
+                    className="btn-icon"
                     style={{
-                        width: '44px',
-                        height: '44px',
-                        borderRadius: '50%',
-                        background: 'var(--canvas-white)',
-                        border: '1px solid var(--hairline-gray)',
-                        boxShadow: 'rgba(255, 255, 255) 0 0 0 4px',
+                        background: 'var(--color-white)',
+                        boxShadow: '0 4px 12px rgba(126, 184, 218, 0.2)',
                     }}
                     title="缩小"
                 >
                     <svg
                         className="w-5 h-5"
                         fill="none"
-                        stroke="var(--ink-black)"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
+                        style={{
+                            strokeWidth: 2,
+                            strokeLinecap: 'round',
+                            strokeLinejoin: 'round',
+                        }}
                     >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                        <path d="M20 12H4" />
                     </svg>
                 </button>
                 <button
@@ -365,13 +370,13 @@ export default function CanvasViewer({
                     style={{
                         minWidth: '60px',
                         height: '44px',
-                        borderRadius: '20px',
-                        background: 'var(--canvas-white)',
-                        border: '1px solid var(--hairline-gray)',
-                        color: 'var(--ink-black)',
+                        borderRadius: '22px',
+                        background: 'var(--color-white)',
+                        border: '2px solid var(--color-ink-muted)',
+                        color: 'var(--color-ink)',
                         fontSize: '14px',
                         fontWeight: 500,
-                        boxShadow: 'rgba(255, 255, 255) 0 0 0 4px',
+                        boxShadow: '0 4px 12px rgba(126, 184, 218, 0.2)',
                     }}
                     title="重置"
                 >
@@ -379,73 +384,67 @@ export default function CanvasViewer({
                 </button>
                 <button
                     onClick={handleZoomIn}
-                    className="flex items-center justify-center transition-all"
+                    className="btn-icon"
                     style={{
-                        width: '44px',
-                        height: '44px',
-                        borderRadius: '50%',
-                        background: 'var(--canvas-white)',
-                        border: '1px solid var(--hairline-gray)',
-                        boxShadow: 'rgba(255, 255, 255) 0 0 0 4px',
+                        background: 'var(--color-white)',
+                        boxShadow: '0 4px 12px rgba(126, 184, 218, 0.2)',
                     }}
                     title="放大"
                 >
                     <svg
                         className="w-5 h-5"
                         fill="none"
-                        stroke="var(--ink-black)"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
+                        style={{
+                            strokeWidth: 2,
+                            strokeLinecap: 'round',
+                            strokeLinejoin: 'round',
+                        }}
                     >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        <path d="M12 4v16m8-8H4" />
                     </svg>
                 </button>
             </div>
 
-            {/* 悬停区域信息 - Airbnb 卡片风格 */}
+            {/* 悬停区域信息 - 线条艺术卡片风格 */}
             <AnimatePresence>
                 {hoveredRegion && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute top-4 left-4 max-w-xs"
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        className="absolute top-4 left-4 max-w-xs card"
                         style={{
-                            background: 'var(--canvas-white)',
-                            borderRadius: '14px',
-                            border: '1px solid var(--hairline-gray)',
-                            boxShadow: 'rgba(0, 0, 0, 0.02) 0 0 0 1px, rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0',
+                            background: 'var(--color-white)',
+                            borderRadius: '16px',
+                            border: '2px solid var(--color-ink-muted)',
+                            boxShadow: 'var(--shadow-soft)',
                             padding: '16px',
                         }}
                     >
                         <h3
-                            className="font-semibold"
+                            className="heading-card"
                             style={{
-                                color: 'var(--ink-black)',
-                                fontSize: '16px',
-                                fontWeight: 600,
-                                lineHeight: 1.25,
+                                color: 'var(--color-ink)',
                             }}
                         >
                             {hoveredRegion.name}
                         </h3>
                         <p
-                            className="mt-1"
+                            className="text-caption mt-1"
                             style={{
-                                color: 'var(--ash-gray)',
-                                fontSize: '14px',
-                                fontWeight: 500,
-                                lineHeight: 1.43,
+                                color: 'var(--color-ink-light)',
                             }}
                         >
                             {hoveredRegion.description}
                         </p>
                         {hoveredRegion.canExpand && (
                             <p
-                                className="mt-2"
+                                className="text-micro mt-2"
                                 style={{
-                                    color: 'var(--rausch)',
-                                    fontSize: '12px',
-                                    fontWeight: 500,
+                                    color: 'var(--color-primary-blue)',
                                 }}
                             >
                                 点击查看详情

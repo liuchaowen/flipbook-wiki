@@ -42,7 +42,7 @@ export default function FlipbookViewer() {
 
     // 获取窗口可用尺寸（除去顶部导航栏高度）
     const getAvailableSize = useCallback(() => {
-        const headerHeight = 80; // 顶部导航栏高度
+        const headerHeight = 72; // 顶部导航栏高度
         const width = window.innerWidth;
         const height = window.innerHeight - headerHeight;
         return { width, height };
@@ -148,6 +148,7 @@ export default function FlipbookViewer() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     imageId: currentImage.id,
+                    imageUrl: currentImage.url,
                     regionName: region.name,
                     regionDescription: region.description,
                     expandType: 'detail',
@@ -207,8 +208,8 @@ export default function FlipbookViewer() {
         <div
             className="h-screen flex flex-col overflow-hidden"
             style={{
-                background: 'var(--canvas-white)',
-                color: 'var(--ink-black)',
+                background: 'var(--color-white)',
+                color: 'var(--color-ink)',
             }}
         >
             {/* 可自动隐藏的顶部导航栏 */}
@@ -232,6 +233,7 @@ export default function FlipbookViewer() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
                             className="flex-1 relative"
                         >
                             <CanvasViewer
@@ -243,38 +245,91 @@ export default function FlipbookViewer() {
                                 isLoading={isLoading}
                             />
 
-                            {/* 当前提示词显示 - Airbnb 卡片风格 */}
-                            <div
-                                className="absolute bottom-4 left-4 max-w-md"
+                            {/* 当前提示词显示 - 线条艺术卡片风格 */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}
+                                className="absolute bottom-4 left-4 max-w-md card"
                                 style={{
-                                    background: 'var(--canvas-white)',
-                                    borderRadius: '14px',
-                                    border: '1px solid var(--hairline-gray)',
-                                    boxShadow: 'rgba(0, 0, 0, 0.02) 0 0 0 1px, rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0',
+                                    background: 'var(--color-white)',
+                                    borderRadius: '16px',
+                                    border: '2px solid var(--color-ink-muted)',
+                                    boxShadow: 'var(--shadow-soft)',
                                     padding: '12px 16px',
                                 }}
                             >
                                 <p
+                                    className="text-micro"
                                     style={{
-                                        color: 'var(--ash-gray)',
-                                        fontSize: '12px',
-                                        fontWeight: 500,
+                                        color: 'var(--color-ink-light)',
                                         marginBottom: '4px',
                                     }}
                                 >
                                     当前主题
                                 </p>
                                 <p
+                                    className="text-body"
                                     style={{
-                                        color: 'var(--ink-black)',
-                                        fontSize: '14px',
+                                        color: 'var(--color-ink)',
                                         fontWeight: 500,
-                                        lineHeight: 1.43,
                                     }}
                                 >
                                     {currentImage.originalPrompt || currentImage.prompt}
                                 </p>
-                            </div>
+                            </motion.div>
+
+                            {/* 加载状态覆盖层 - 粉彩风格 */}
+                            <AnimatePresence>
+                                {isLoading && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="loading-overlay absolute inset-0 flex items-center justify-center z-30"
+                                    >
+                                        <div
+                                            className="card-pastel"
+                                            style={{
+                                                padding: '24px 32px',
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            {/* 加载动画 - 线条艺术风格 */}
+                                            <div className="flex items-center justify-center mb-3">
+                                                <svg
+                                                    className="w-8 h-8 animate-spin"
+                                                    viewBox="0 0 24 24"
+                                                    style={{ color: 'var(--color-primary-blue)' }}
+                                                >
+                                                    <circle
+                                                        className="opacity-25"
+                                                        cx="12" cy="12" r="10"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        fill="none"
+                                                    />
+                                                    <path
+                                                        className="opacity-75"
+                                                        fill="currentColor"
+                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <p
+                                                className="text-body"
+                                                style={{
+                                                    color: 'var(--color-ink)',
+                                                    fontWeight: 500,
+                                                }}
+                                            >
+                                                {loadingMessage || '加载中...'}
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
 
                         </motion.div>
                     ) : (
@@ -283,10 +338,22 @@ export default function FlipbookViewer() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
                             className="flex-1 flex flex-col items-center justify-center p-8"
-                            style={{ background: 'var(--canvas-white)' }}
+                            style={{
+                                background: 'linear-gradient(135deg, var(--color-primary-beige) 0%, var(--color-white) 50%, rgba(126, 184, 218, 0.05) 100%)',
+                            }}
                         >
-                            <PromptInput onSubmit={handleGenerate} isLoading={isLoading} />
+                            {/* 装饰性背景图案 */}
+                            <div
+                                className="absolute inset-0 pattern-dots opacity-30"
+                                style={{ zIndex: 0 }}
+                            />
+
+                            {/* 主内容 */}
+                            <div style={{ zIndex: 1 }}>
+                                <PromptInput onSubmit={handleGenerate} isLoading={isLoading} />
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

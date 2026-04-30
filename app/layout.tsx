@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Nunito } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const nunito = Nunito({
+  variable: "--font-nunito",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -25,9 +21,16 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${nunito.variable} h-full antialiased`}
     >
-      <body className="h-full flex flex-col bg-gray-950 overflow-hidden">{children}</body>
+      <body
+        className="h-full flex flex-col overflow-hidden"
+        style={{
+          fontFamily: "'Nunito', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+        }}
+      >
+        {children}
+      </body>
     </html>
   );
 }

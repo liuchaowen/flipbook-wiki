@@ -76,83 +76,84 @@ export default function Header({
                         animate={{ y: 0 }}
                         exit={{ y: -80 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="fixed top-0 left-0 right-0 z-40"
+                        className="fixed top-0 left-0 right-0 z-40 nav-header"
                         style={{
-                            height: '80px',
-                            borderBottom: '1px solid var(--hairline-gray)',
-                            background: 'var(--canvas-white)',
+                            height: '72px',
+                            borderBottom: '2px solid var(--color-ink-muted)',
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            backdropFilter: 'blur(10px)',
                         }}
                         onMouseLeave={() => !headerVisible && setIsHovering(false)}
                     >
-                        <div className="h-full flex items-center justify-between px-6">
-                            {/* Logo - Rausch 品牌色 */}
+                        <div className="h-full flex items-center justify-between px-8">
+                            {/* Logo - 天际蓝品牌色 */}
                             <h1
                                 className="font-bold"
                                 style={{
                                     fontSize: '20px',
                                     fontWeight: 600,
-                                    color: 'var(--rausch)',
-                                    letterSpacing: '-0.018em',
+                                    color: 'var(--color-primary-blue)',
+                                    letterSpacing: '-0.01em',
                                 }}
                             >
                                 <a href="/">Flipbook Wiki</a>
                             </h1>
 
-                            {/* 中间导航按钮 - 圆形图标按钮 */}
+                            {/* 中间导航按钮 - 圆形线条图标按钮 */}
                             {showNavigation && (
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-3">
                                     <button
                                         onClick={onBack}
                                         disabled={!canGoBack}
-                                        className="flex items-center justify-center transition-all"
+                                        className="btn-icon"
                                         style={{
-                                            width: '44px',
-                                            height: '44px',
-                                            borderRadius: '50%',
-                                            background: 'var(--soft-cloud)',
-                                            border: 'none',
-                                            cursor: canGoBack ? 'pointer' : 'not-allowed',
                                             opacity: canGoBack ? 1 : 0.3,
+                                            cursor: canGoBack ? 'pointer' : 'not-allowed',
                                         }}
                                         title="后退"
                                     >
                                         <svg
                                             className="w-5 h-5"
                                             fill="none"
-                                            stroke="var(--ink-black)"
+                                            stroke="currentColor"
                                             viewBox="0 0 24 24"
+                                            style={{
+                                                strokeWidth: 2,
+                                                strokeLinecap: 'round',
+                                                strokeLinejoin: 'round',
+                                            }}
                                         >
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                            <path d="M15 19l-7-7 7-7" />
                                         </svg>
                                     </button>
                                     <button
                                         onClick={onForward}
                                         disabled={!canGoForward}
-                                        className="flex items-center justify-center transition-all"
+                                        className="btn-icon"
                                         style={{
-                                            width: '44px',
-                                            height: '44px',
-                                            borderRadius: '50%',
-                                            background: 'var(--soft-cloud)',
-                                            border: 'none',
-                                            cursor: canGoForward ? 'pointer' : 'not-allowed',
                                             opacity: canGoForward ? 1 : 0.3,
+                                            cursor: canGoForward ? 'pointer' : 'not-allowed',
                                         }}
                                         title="前进"
                                     >
                                         <svg
                                             className="w-5 h-5"
                                             fill="none"
-                                            stroke="var(--ink-black)"
+                                            stroke="currentColor"
                                             viewBox="0 0 24 24"
+                                            style={{
+                                                strokeWidth: 2,
+                                                strokeLinecap: 'round',
+                                                strokeLinejoin: 'round',
+                                            }}
                                         >
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            <path d="M9 5l7 7-7 7" />
                                         </svg>
                                     </button>
                                     <span
                                         className="ml-2"
                                         style={{
-                                            color: 'var(--ash-gray)',
+                                            color: 'var(--color-ink-light)',
                                             fontSize: '14px',
                                             fontWeight: 500,
                                         }}
@@ -163,20 +164,14 @@ export default function Header({
                             )}
 
                             {/* 右侧按钮 */}
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-3">
                                 {showNavigation && onNew && (
                                     <button
                                         onClick={onNew}
-                                        className="transition-all"
+                                        className="btn-secondary"
                                         style={{
-                                            background: 'var(--canvas-white)',
-                                            color: 'var(--ink-black)',
+                                            padding: '10px 20px',
                                             fontSize: '14px',
-                                            fontWeight: 500,
-                                            padding: '10px 16px',
-                                            borderRadius: '20px',
-                                            border: '1px solid var(--hairline-gray)',
-                                            cursor: 'pointer',
                                         }}
                                     >
                                         新建探索
@@ -186,44 +181,36 @@ export default function Header({
                                 {mounted && (
                                     <button
                                         onClick={toggleTheme}
-                                        className="flex items-center justify-center transition-all"
-                                        style={{
-                                            width: '44px',
-                                            height: '44px',
-                                            borderRadius: '50%',
-                                            background: 'var(--soft-cloud)',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                        }}
+                                        className="btn-icon"
                                         title={theme === 'light' ? '切换到暗色模式' : '切换到亮色模式'}
                                     >
                                         {theme === 'light' ? (
                                             <svg
                                                 className="w-5 h-5"
                                                 fill="none"
-                                                stroke="var(--ink-black)"
+                                                stroke="currentColor"
                                                 viewBox="0 0 24 24"
+                                                style={{
+                                                    strokeWidth: 2,
+                                                    strokeLinecap: 'round',
+                                                    strokeLinejoin: 'round',
+                                                }}
                                             >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                                                />
+                                                <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                                             </svg>
                                         ) : (
                                             <svg
                                                 className="w-5 h-5"
                                                 fill="none"
-                                                stroke="var(--ink-black)"
+                                                stroke="currentColor"
                                                 viewBox="0 0 24 24"
+                                                style={{
+                                                    strokeWidth: 2,
+                                                    strokeLinecap: 'round',
+                                                    strokeLinejoin: 'round',
+                                                }}
                                             >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                                                />
+                                                <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                                             </svg>
                                         )}
                                     </button>

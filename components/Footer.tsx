@@ -29,29 +29,39 @@ export default function Footer() {
             <AnimatePresence>
                 {showFooter && (
                     <motion.footer
-                        initial={{ y: 80 }}
+                        initial={{ y: 64 }}
                         animate={{ y: 0 }}
-                        exit={{ y: 80 }}
+                        exit={{ y: 64 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="fixed bottom-0 left-0 right-0 z-40"
+                        className="fixed bottom-0 left-0 right-0 z-40 nav-footer"
                         style={{
-                            height: '60px',
-                            borderTop: '1px solid var(--hairline-gray)',
-                            background: 'var(--canvas-white)',
+                            height: '64px',
+                            borderTop: '2px solid var(--color-ink-muted)',
+                            background: 'var(--color-white)',
                         }}
                         onMouseLeave={() => !footerVisible && setIsHovering(false)}
                     >
                         <div className="h-full flex items-center justify-center">
-                            <p className="flex items-center justify-center gap-1 text-sm" style={{ color: 'var(--ash-gray)' }}>
+                            <p
+                                className="flex items-center justify-center gap-2 text-caption"
+                                style={{ color: 'var(--color-ink-light)' }}
+                            >
                                 <span>Inspired by</span>
                                 <a
                                     href="https://flipbook.page"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="font-medium transition-colors duration-200"
-                                    style={{ color: 'var(--rausch)' }}
-                                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
-                                    onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                                    className="font-medium transition-all duration-300"
+                                    style={{
+                                        color: 'var(--color-primary-blue)',
+                                        borderBottom: '2px solid transparent',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.borderBottomColor = 'var(--color-primary-blue)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.borderBottomColor = 'transparent';
+                                    }}
                                 >
                                     flipbook.page
                                 </a>
