@@ -53,9 +53,7 @@ export default function Header({
 
     // 当 headerVisible 变化时，重置 hover 状态
     useEffect(() => {
-        if (headerVisible) {
-            setIsHovering(false);
-        }
+        setIsHovering(false);
     }, [headerVisible]);
 
     // 鼠标接近顶部时触发显示

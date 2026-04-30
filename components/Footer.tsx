@@ -10,9 +10,7 @@ export default function Footer() {
 
     // 当 footerVisible 变化时，重置 hover 状态
     useEffect(() => {
-        if (footerVisible) {
-            setIsHovering(false);
-        }
+        setIsHovering(false);
     }, [footerVisible]);
 
     // 鼠标接近底部时触发显示
