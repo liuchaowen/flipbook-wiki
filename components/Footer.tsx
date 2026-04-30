@@ -15,17 +15,24 @@ export default function Footer() {
         }
     }, [footerVisible]);
 
+    // 鼠标接近底部时触发显示
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            const threshold = 80; // 距离底部 80px 内触发
+            if (window.innerHeight - e.clientY < threshold) {
+                setIsHovering(true);
+            }
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
     // 显示条件：store 中可见 或 鼠标悬停在底部区域
     const showFooter = footerVisible || isHovering;
 
     return (
         <>
-            {/* 底部悬停检测区域 - 接近底部时触发显示 */}
-            <div
-                className="fixed bottom-0 left-0 right-0 h-16 z-50"
-                onMouseEnter={() => setIsHovering(true)}
-            />
-
             <AnimatePresence>
                 {showFooter && (
                     <motion.footer

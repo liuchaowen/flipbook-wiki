@@ -58,17 +58,24 @@ export default function Header({
         }
     }, [headerVisible]);
 
+    // 鼠标接近顶部时触发显示
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            const threshold = 80; // 距离顶部 80px 内触发
+            if (e.clientY < threshold) {
+                setIsHovering(true);
+            }
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
     // 显示条件：store 中可见 或 鼠标悬停在顶部区域
     const showHeader = headerVisible || isHovering;
 
     return (
         <>
-            {/* 顶部悬停检测区域 - 接近顶部时触发显示 */}
-            <div
-                className="fixed top-0 left-0 right-0 h-16 z-50"
-                onMouseEnter={() => setIsHovering(true)}
-            />
-
             <AnimatePresence>
                 {showHeader && (
                     <motion.header

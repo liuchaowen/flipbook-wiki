@@ -69,7 +69,7 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
     const isHistoryMode = history.length > 0;
 
     return (
-        <div className="w-full max-w-3xl mx-auto">
+        <div className="w-3xl max-w-full mx-auto px-4">
             {/* 标题区域 - 遵循设计系统排版规则 */}
             <div className="text-center mb-10">
                 <h1
