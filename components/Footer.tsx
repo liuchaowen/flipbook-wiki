@@ -43,7 +43,6 @@ export default function Footer() {
                         className="fixed bottom-0 left-0 right-0 z-40 nav-footer"
                         style={{
                             height: '64px',
-                            borderTop: '2px solid var(--color-ink-muted)',
                             background: 'var(--color-white)',
                         }}
                         onMouseLeave={() => !footerVisible && setIsHovering(false)}

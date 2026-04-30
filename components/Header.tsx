@@ -86,8 +86,6 @@ export default function Header({
                         className="fixed top-0 left-0 right-0 z-40 nav-header"
                         style={{
                             height: '72px',
-                            borderBottom: '2px solid var(--color-ink-muted)',
-                            background: 'rgba(255, 255, 255, 0.95)',
                             backdropFilter: 'blur(10px)',
                         }}
                         onMouseLeave={() => !headerVisible && setIsHovering(false)}
@@ -99,7 +97,7 @@ export default function Header({
                                 style={{
                                     fontSize: '20px',
                                     fontWeight: 600,
-                                    color: 'var(--color-primary-blue)',
+                                    color: 'var(--color-ink)',
                                     letterSpacing: '-0.01em',
                                 }}
                             >

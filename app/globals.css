@@ -8,45 +8,74 @@
 
 :root {
   /* === Primary Colors (主色调) === */
-  --color-primary-blue: #7EB8DA;   /* 天际蓝 */
-  --color-primary-green: #A8D5BA;  /* 薄荷绿 */
-  --color-primary-beige: #F5E6D3;  /* 暖米色 */
+  --color-primary-blue: #7EB8DA;
+  /* 天际蓝 */
+  --color-primary-green: #A8D5BA;
+  /* 薄荷绿 */
+  --color-primary-beige: #F5E6D3;
+  /* 暖米色 */
 
   /* === Pastel Extended (粉彩扩展色) === */
-  --color-pastel-lavender: #D4C4E0; /* 淡紫丁香 */
-  --color-pastel-pink: #F2D7D9;     /* 柔粉 */
-  --color-pastel-apricot: #FFDAB9;  /* 浅杏 */
-  --color-pastel-lemon: #FFF9C4;    /* 淡柠檬 */
-  --color-pastel-mist: #B8D4E3;     /* 雾蓝 */
+  --color-pastel-lavender: #D4C4E0;
+  /* 淡紫丁香 */
+  --color-pastel-pink: #F2D7D9;
+  /* 柔粉 */
+  --color-pastel-apricot: #FFDAB9;
+  /* 浅杏 */
+  --color-pastel-lemon: #FFF9C4;
+  /* 淡柠檬 */
+  --color-pastel-mist: #B8D4E3;
+  /* 雾蓝 */
 
   /* === Ink & Lines (线条与文字色) === */
-  --color-ink: #2D3436;       /* 墨线 - 主要线条、标题文字 */
-  --color-ink-light: #636E72; /* 灰线 - 次要线条、正文文字 */
-  --color-ink-muted: #B2BEC3; /* 淡线 - 分割线、禁用状态 */
-  --color-white: #FFFFFF;     /* 纯白 - 卡片背景、按钮文字 */
+  --color-ink: #2D3436;
+  /* 墨线 - 主要线条、标题文字 */
+  --color-ink-light: #636E72;
+  /* 灰线 - 次要线条、正文文字 */
+  --color-ink-muted: #B2BEC3;
+  /* 淡线 - 分割线、禁用状态 */
+  --color-white: #FFFFFF;
+  /* 纯白 - 卡片背景、按钮文字 */
 
   /* === Semantic Colors (语义色) === */
-  --color-success: #A8D5BA;  /* 成功绿 (薄荷绿) */
-  --color-warning: #FFDAB9;  /* 警告橙 (浅杏) */
-  --color-error: #E8A0A0;    /* 错误红 (柔和粉红) */
-  --color-info: #7EB8DA;     /* 信息蓝 (天际蓝) */
+  --color-success: #A8D5BA;
+  /* 成功绿 (薄荷绿) */
+  --color-warning: #FFDAB9;
+  /* 警告橙 (浅杏) */
+  --color-error: #E8A0A0;
+  /* 错误红 (柔和粉红) */
+  --color-info: #7EB8DA;
+  /* 信息蓝 (天际蓝) */
 
   /* === Spacing (间距系统 - 8px基础单位) === */
-  --spacing-xs: 4px;   /* 极小 - 图标与文字间距 */
-  --spacing-sm: 8px;   /* 小 - 紧凑元素间距 */
-  --spacing-md: 16px;  /* 中 - 组件内部间距 */
-  --spacing-lg: 24px;  /* 大 - 区块间距 */
-  --spacing-xl: 32px;  /* 超大 - 区块外边距 */
-  --spacing-2xl: 48px; /* 巨大 - 页面区块间距 */
-  --spacing-3xl: 64px; /* 特大 - 页面顶部/底部间距 */
+  --spacing-xs: 4px;
+  /* 极小 - 图标与文字间距 */
+  --spacing-sm: 8px;
+  /* 小 - 紧凑元素间距 */
+  --spacing-md: 16px;
+  /* 中 - 组件内部间距 */
+  --spacing-lg: 24px;
+  /* 大 - 区块间距 */
+  --spacing-xl: 32px;
+  /* 超大 - 区块外边距 */
+  --spacing-2xl: 48px;
+  /* 巨大 - 页面区块间距 */
+  --spacing-3xl: 64px;
+  /* 特大 - 页面顶部/底部间距 */
 
   /* === Border Radius (圆角系统) === */
-  --radius-sm: 4px;    /* 小圆角 - 标签、小徽章 */
-  --radius-md: 8px;    /* 中圆角 - 输入框、小按钮 */
-  --radius-lg: 12px;   /* 大圆角 - 卡片、下拉菜单 */
-  --radius-xl: 16px;   /* 超大圆角 - 大卡片、图片容器 */
-  --radius-pill: 24px; /* 胶囊圆角 - 主按钮、搜索框 */
-  --radius-full: 50%;  /* 全圆 - 图标按钮、头像 */
+  --radius-sm: 4px;
+  /* 小圆角 - 标签、小徽章 */
+  --radius-md: 8px;
+  /* 中圆角 - 输入框、小按钮 */
+  --radius-lg: 12px;
+  /* 大圆角 - 卡片、下拉菜单 */
+  --radius-xl: 16px;
+  /* 超大圆角 - 大卡片、图片容器 */
+  --radius-pill: 24px;
+  /* 胶囊圆角 - 主按钮、搜索框 */
+  --radius-full: 50%;
+  /* 全圆 - 图标按钮、头像 */
 
   /* === Stroke Width (线条宽度) === */
   --stroke-thin: 1px;
@@ -99,6 +128,9 @@
   --shadow-focus: 0 0 0 4px rgba(126, 184, 218, 0.2);
   --shadow-error-focus: 0 0 0 4px rgba(232, 160, 160, 0.2);
 
+  /* === Navigation (导航背景) === */
+  --nav-bg: rgba(255, 255, 255, 0.95);
+
   /* === Gradients (渐变) === */
   --gradient-primary: linear-gradient(135deg, #7EB8DA 0%, #A8D5BA 100%);
   --gradient-warm: linear-gradient(135deg, #F5E6D3 0%, #F2D7D9 100%);
@@ -132,6 +164,8 @@
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.3);
   --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.4);
   --shadow-focus: 0 0 0 4px rgba(90, 155, 200, 0.3);
+
+  --nav-bg: rgba(26, 26, 26, 0.95);
 }
 
 @theme inline {
@@ -535,9 +569,9 @@ body {
 
 /* Top Navigation */
 .nav-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 2px solid var(--color-ink-muted);
+  background: var(--nav-bg);
+  backdrop-filter: blur(5px);
+  border-bottom: 1px solid var(--color-ink-muted);
   height: 72px;
   padding: 0 var(--spacing-xl);
 }
@@ -564,7 +598,7 @@ body {
 /* Bottom Navigation (Mobile) */
 .nav-footer {
   background: var(--color-white);
-  border-top: 2px solid var(--color-ink-muted);
+  border-top: 1px solid var(--color-ink-muted);
   height: 64px;
   padding: 0 var(--spacing-md);
 }
@@ -639,13 +673,11 @@ body {
 
 /* Lines Pattern */
 .pattern-lines {
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 8px,
-    rgba(126, 184, 218, 0.1) 8px,
-    rgba(126, 184, 218, 0.1) 16px
-  );
+  background-image: repeating-linear-gradient(45deg,
+      transparent,
+      transparent 8px,
+      rgba(126, 184, 218, 0.1) 8px,
+      rgba(126, 184, 218, 0.1) 16px);
 }
 
 /* Wave Divider */
@@ -656,8 +688,13 @@ body {
 
 /* === Animation === */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeUp {
@@ -665,6 +702,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -675,14 +713,22 @@ body {
   from {
     stroke-dashoffset: 1000;
   }
+
   to {
     stroke-dashoffset: 0;
   }
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes spin {
@@ -759,6 +805,7 @@ body {
     transform: scale(0);
     opacity: 1;
   }
+
   to {
     transform: scale(4);
     opacity: 0;
