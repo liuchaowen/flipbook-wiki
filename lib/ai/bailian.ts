@@ -5,6 +5,9 @@ import {
   buildInfographicPrompt,
   buildExpandPrompt,
   buildImageAnalysisPrompt,
+  buildKnowledgeFrameworkPrompt,
+  buildEnhancedInfographicPrompt,
+  KnowledgeFramework,
   NEGATIVE_PROMPT,
 } from './prompts';
 
@@ -140,20 +143,119 @@ async function imageGenerationCall(
   throw new Error(errorMsg);
 }
 
+// 知识框架生成（使用视觉语言模型）
+async function generateKnowledgeFramework(topic: string, locale?: string): Promise<KnowledgeFramework | null> {
+  const apiKey = getApiKey();
+  const language = locale || 'zh-CN';
+  const frameworkPrompt = buildKnowledgeFrameworkPrompt(topic, language);
+
+  console.log('--- 正在生成知识框架 ---');
+  console.log(`使用 ${VISION_MODEL} 模型...`);
+  console.log('主题:', topic);
+  console.log('语言:', language);
+
+  try {
+    const response = await fetch(`${DASHSCOPE_BASE_URL}/services/aigc/multimodal-generation/generation`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: VISION_MODEL,
+        input: {
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { text: frameworkPrompt }
+              ]
+            }
+          ]
+        },
+        parameters: {
+          result_format: 'message',
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('知识框架生成失败:', response.status, errorText);
+      return null;
+    }
+
+    const responseText = await response.text();
+    if (!responseText || responseText.trim() === '') {
+      console.error('知识框架生成返回空响应');
+      return null;
+    }
+
+    const data = JSON.parse(responseText);
+    const content = data.output?.choices?.[0]?.message?.content?.[0]?.text;
+    
+    if (!content) {
+      console.error('知识框架生成无内容返回');
+      return null;
+    }
+
+    console.log('知识框架原始响应:', content);
+
+    // 解析 JSON 响应
+    let framework: KnowledgeFramework;
+    try {
+      let jsonContent = content.trim();
+      // 移除可能的 markdown 代码块标记
+      const jsonMatch = jsonContent.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        jsonContent = jsonMatch[1].trim();
+      }
+      framework = JSON.parse(jsonContent);
+    } catch (parseError) {
+      console.error('知识框架 JSON 解析错误:', content);
+      return null;
+    }
+
+    console.log('解析后的知识框架:', JSON.stringify(framework, null, 2));
+    return framework;
+  } catch (error) {
+    console.error('知识框架生成错误:', error);
+    return null;
+  }
+}
+
 // 图像生成（主函数）- 使用 multimodal-generation API
+// 优化流程：先使用 VISION_MODEL 生成知识框架，再结合风格提示词生成图像
 export async function generateImage(prompt: string, size?: string, locale?: string): Promise<{
   success: boolean;
   imageUrl?: string;
   revisedPrompt?: string;
+  knowledgeFramework?: KnowledgeFramework;
   error?: string;
 }> {
   try {
-    const enhancedPrompt = buildInfographicPrompt(prompt, { language: locale });
+    console.log('--- 开始图像生成流程 ---');
+    console.log('用户输入主题:', prompt);
+    console.log('用户语言:', locale || 'auto-detect');
+
+    // 步骤1: 使用 VISION_MODEL 生成知识框架
+    const framework = await generateKnowledgeFramework(prompt, locale);
+    
+    let enhancedPrompt: string;
+    
+    if (framework) {
+      // 步骤2: 使用知识框架构建增强提示词
+      console.log('使用知识框架构建增强提示词...');
+      enhancedPrompt = buildEnhancedInfographicPrompt(prompt, framework, { language: locale });
+    } else {
+      // 如果知识框架生成失败，回退到原始提示词构建方式
+      console.log('知识框架生成失败，使用原始提示词构建方式...');
+      enhancedPrompt = buildInfographicPrompt(prompt, { language: locale });
+    }
 
     console.log('--- 正在提交文生图任务 ---');
     console.log('使用 qwen-image-2.0-pro 模型...');
-    console.log('用户语言:', locale || 'auto-detect');
-    console.log('Prompt:', enhancedPrompt);
+    console.log('最终 Prompt:', enhancedPrompt);
     console.log('请求尺寸:', size || '2048*2048');
 
     const imageUrl = await imageGenerationCall(enhancedPrompt, {
@@ -167,6 +269,7 @@ export async function generateImage(prompt: string, size?: string, locale?: stri
       success: true,
       imageUrl,
       revisedPrompt: enhancedPrompt,
+      knowledgeFramework: framework || undefined,
     };
   } catch (error) {
     console.error('发生错误:', error);
@@ -345,4 +448,8 @@ export {
   buildInfographicPrompt,
   buildExpandPrompt,
   buildImageAnalysisPrompt,
+  buildKnowledgeFrameworkPrompt,
+  buildEnhancedInfographicPrompt,
 } from './prompts';
+
+export type { KnowledgeFramework } from './prompts';
