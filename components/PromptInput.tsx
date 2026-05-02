@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, Loader2, ArrowUp } from 'lucide-react';
+import { Search, Loader2, ArrowUp, X } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { type Locale } from '@/i18n/config';
 
@@ -128,6 +128,24 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
                         />
                     </div>
 
+                    {/* 清除按钮 */}
+                    {prompt.trim() && !isLoading && (
+                        <button
+                            type="button"
+                            onClick={() => setPrompt('')}
+                            className="flex items-center justify-center mr-2 hover:opacity-70 transition-opacity"
+                            style={{
+                                height: '32px',
+                                width: '32px',
+                                borderRadius: '50%',
+                                cursor: 'pointer',
+                                border: 'none',
+                            }}
+                        >
+                            <X className="w-4 h-4" style={{ color: 'var(--color-ink)' }} />
+                        </button>
+                    )}
+
                     {/* 提交按钮 - 遵循设计系统主要按钮规范 */}
                     <button
                         type="submit"
@@ -206,24 +224,11 @@ export default function PromptInput({ onSubmit, isLoading = false }: PromptInput
                                             onClick={(e) => handleDeleteHistoryItem(item, e)}
                                             className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-5 h-5 rounded-full transition-colors"
                                             style={{
-                                                color: 'var(--color-ink-light)',
                                                 background: 'transparent',
                                             }}
                                             title={t('deleteHistory')}
                                         >
-                                            <svg
-                                                className="w-3.5 h-3.5"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                style={{
-                                                    strokeWidth: 2,
-                                                    strokeLinecap: 'round',
-                                                    strokeLinejoin: 'round',
-                                                }}
-                                            >
-                                                <path d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
+                                            <X className="w-3.5 h-3.5" style={{ color: 'var(--color-ink)' }} />
                                         </button>
                                     )}
                                 </div>
