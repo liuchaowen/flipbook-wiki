@@ -69,6 +69,25 @@ export default function Footer() {
                                 >
                                     flipbook.page
                                 </a>
+                                <span>Power by</span>
+                                <a
+                                    href="https://api.aiseo.one/register?channel=c_mi62tost"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="font-medium transition-all duration-300"
+                                    style={{
+                                        color: 'var(--color-primary-blue)',
+                                        borderBottom: '2px solid transparent',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.borderBottomColor = 'var(--color-primary-blue)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.borderBottomColor = 'transparent';
+                                    }}
+                                >
+                                    X API 中转站
+                                </a>
                             </p>
                         </div>
                     </motion.footer>
